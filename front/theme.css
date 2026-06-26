@@ -1,0 +1,304 @@
+:root {
+  --bg: #f3f6fb;
+  --surface: #ffffff;
+  --primary: #0d2b4d;
+  --accent: #d00000;
+  --accent-dark: #9a0000;
+  --text: #15243b;
+  --muted: #4f6178;
+  --border: rgba(13, 43, 77, 0.12);
+  --details: #ffd700;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(180deg, #eef4fb 0%, #f7f9fc 100%);
+  color: var(--text);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: none;
+  pointer-events: none;
+}
+
+main,
+.page-content {
+  width: min(1100px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+
+section,
+.form,
+.card,
+.page-card,
+fieldset,
+.container,
+.lojas-grid {
+  margin-bottom: 28px;
+}
+
+section.intro {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 36px;
+}
+
+section.intro h2 {
+  color: var(--primary);
+  font-size: 2.4rem;
+  margin-bottom: 12px;
+}
+
+section.intro p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.card,
+.page-card,
+fieldset,
+.form,
+.loja-card,
+#configcaixa,
+#fundo,
+#secao,
+#div3,
+#div4,
+.form-box,
+.conteudo,
+.product-card,
+.menu .produto {
+  background: var(--surface);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px rgba(13, 43, 77, 0.12);
+}
+
+fieldset,
+.form,
+.form-box,
+#configcaixa,
+#fundo,
+.menu,
+.lojas-grid {
+  padding: 26px;
+}
+
+h1,
+h2 {
+  color: var(--bg);
+}
+
+h1 {
+  font-size: clamp(2rem, 2.5vw, 3rem);
+}
+
+h2,
+h3 {
+  font-weight: 700;
+}
+
+p,
+label,
+input,
+select,
+textarea {
+  font-family: "Poppins", sans-serif;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea,
+button,
+.form button,
+.button,
+.botoes,
+.verMais,
+#pause,
+#configurar,
+#btnCarrinho,
+#btnCarrinho2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 18px;
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d9e1ef;
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: inset 0 4px 10px rgba(13, 43, 77, 0.04);
+  margin-bottom: 16px;
+}
+
+button,
+.form button,
+.button,
+.botoes,
+.verMais,
+#pause,
+#configurar,
+#btnCarrinho,
+#btnCarrinho2 {
+  padding: 12px 18px;
+  cursor: pointer;
+  color: white;
+  background: var(--accent);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:hover,
+.form button:hover,
+.button:hover,
+.botoes:hover,
+.verMais:hover,
+#pause:hover,
+#configurar:hover,
+#btnCarrinho:hover,
+#btnCarrinho2:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(208, 0, 0, 0.22);
+}
+
+button:focus,
+.form button:focus,
+.button:focus,
+.botoes:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 3px solid rgba(208, 0, 0, 0.18);
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.navbar a {
+  font-weight: 600;
+}
+
+button,
+.form button,
+.button,
+.botoes,
+.verMais {
+  min-height: 48px;
+}
+
+
+#configcaixa,
+.card,
+.page-card,
+.loja-card {
+  width: 100%;
+}
+
+.form, .fundo {
+  width: 600px;
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.menu .produto {
+  padding: 22px;
+}
+
+.lojas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+#carrinho,
+#carrinho2 {
+  display: none;
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  width: 240px;
+  background: white;
+  color: var(--text);
+  padding: 16px;
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(13, 43, 77, 0.14);
+}
+
+#carrinho.ativar,
+#carrinho2.ativar {
+  display: block;
+}
+
+#btnCarrinho,
+#btnCarrinho2 {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 0;
+}
+
+@media (max-width: 860px) {
+  header {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .navbar {
+    justify-content: center;
+  }
+
+  .menu,
+  .lojas-grid,
+  .container,
+  .form,
+  .card {
+    width: 100%;
+  }
+}

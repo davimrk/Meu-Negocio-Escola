@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lojas Registradas</title>
+    <link rel="stylesheet" href="lojas.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html">Início</a>
+        <a href="menu.html">Cardápio</a>
+        <a href="lojas.html" class="active">Lojas</a>
+        <a href="login.html">Login</a>
+        <a href="cadastro.html">Cadastre-se</a>
+        <a href="cadastroempreendedor.html">Seja um empreendedor!</a>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <section class="intro">
+        <h2>Lojas registradas</h2>
+        <p>Veja todas as lojas que já foram cadastradas na sua escola.</p>
+      </section>
+
+      <section id="lojasList" class="lojas-grid">
+        
+      </section>
+      <div id="emptyMessage" class="empty-message"></div>
+    </main>
+
+    <script src="lojas.js"></script>
+    <script src="navbar.js"></script>
+  </body>
+</html>

@@ -1,0 +1,116 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #e7d7d7;
+  text-align: center;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+#titulo1 {
+  flex: 1;
+  background: red;
+  color: white;
+  margin: 0;
+  padding: 15px;
+  font-family: "Luckiest Guy", cursive;
+}
+
+#logo {
+  background: white;
+  padding: 5px;
+  height: 60px;
+}
+
+#titulo2 {
+  flex: 1;
+  background: #0b2a50;
+  color: white;
+  margin: 0;
+  padding: 15px;
+  font-family: "Luckiest Guy", cursive;
+}
+
+/* CARD */
+.card {
+  background: #f3f3f3;
+  margin: 30px;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.titulo {
+  color: #123d6b;
+  font-size: 40px;
+  margin-bottom: 20px;
+  font-family: "Carter One", cursive;
+}
+
+/* CONTEÚDO CENTRALIZADO */
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+/* PRODUTO */
+.produto {
+  text-align: center;
+}
+
+.bolo {
+  width: 150px;
+}
+
+.produto h2 {
+  font-family: "Carter One", cursive;
+}
+
+.preco {
+  color: #123d6b;
+  font-weight: bold;
+  font-family: "Baloo Chettan 2", cursive;
+}
+
+/* QUANTIDADE */
+.qtd {
+  margin-top: 10px;
+}
+
+/* MENSAGEM CENTRALIZADA */
+.mensagem {
+  text-align: center;
+  font-size: 20px;
+  color: #0b2a50;
+  max-width: 500px;
+}
+
+/* CÓDIGO */
+.codigo-area {
+  margin-top: 20px;
+}
+
+.codigo {
+  background: white;
+  border: 3px solid #7a2b2b;
+  display: inline-block;
+  padding: 15px 40px;
+  font-size: 40px;
+  font-weight: bold;
+  border-radius: 20px;
+  color: #0b2a50;
+  font-family: "Luckiest Guy", cursive;
+}
+
+/* RODAPÉ */
+.rodape {
+  margin-top: 20px;
+  font-style: italic;
+}

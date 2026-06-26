@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Meu Negócio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Carter+One&family=Luckiest+Guy&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body id="body">
+    <!--Davi-->
+ <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html" class="active">Início</a>
+        <a href="menu.html">Cardápio</a>
+        <a href="lojas.html">Lojas</a>
+        <a href="login.html">Login</a>
+        <a href="cadastro.html">Cadastre-se</a>
+        <a href="cadastroempreendedor.html">Seja um empreendedor!</a>
+        <button id="btnLoja"><a href="imdequis.html">Minha loja</a></button>
+      </nav>
+    </header>
+
+    <p id="saudacaoUsuario"></p>
+
+    <section class="topo">
+      <h2>O lanche da escola, na palma da sua mão.</h2>
+    </section>
+    <!--oi-->
+    <section class="zip">
+      <div class="card azul">
+        <h3>Mais vendidos da semana</h3>
+        <div id="maisVendidos"></div>
+      </div>
+
+      <!-- DESTAQUE -->
+      <div class="card claro" id="claro">
+        <h3>Lanches em destaque</h3>
+
+        <div class="item" id="item4">
+          <img src="img/coxinha.jpg" />
+          <p>Coxinha - R$5,00</p>
+          <button id="botao2">+</button>
+        </div>
+
+        <div class="item" id="item5">
+          <img src="img/cocacola.jpg" />
+          <p>Coca-cola - R$3,50</p>
+          <button id="botao3">+</button>
+        </div>
+
+        <button type="submit" id="verMais">VEJA MAIS</button>
+      </div>
+      <div class="card promo">
+        <h2>PROMO</h2>
+        <p>ATÉ 50% OFF</p>
+        <img src="img/bolo.png" />
+      </div>
+    </section>
+    <section id="sec3">
+      <div id="abrircarrinho">
+        <button type="submit" id="btnCarrinho">🛒</button>
+        <div id="carrinho">
+          <h2>Carrinho</h2>
+          <ul id="listaCarrinho"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="humor">
+      <div class="reason" id="ia">
+        <h3>Sugestão Inteligente</h3>
+        <input
+          type="text"
+          id="pedido"
+          placeholder="Como você está se sentindo hoje?"
+        />
+        <button onclick="enviar()">Pedir sugestão</button>
+        <p id="resultado" style="text-align: center"></p>
+      </div>
+    </section>
+    <script src="navbar.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

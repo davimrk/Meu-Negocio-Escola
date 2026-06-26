@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Negócio Escola</title>
+    <link rel="stylesheet" href="loja.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Carter+One&family=Luckiest+Guy&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html">Início</a>
+        <a href="menu.html">Cardápio</a>
+        <a href="lojas.html">Lojas</a>
+        <a href="minhaLoja.html" class="active">Minha Loja</a>
+      </nav>
+    </header>
+
+    <h2 id="aga2"><b>Bem Vindo, <span id="nomeEmpreendedor">...</span>!</b></h2>
+
+    <div class="container">
+      <section id="secao">
+        <h2 class="titulo">Vendas por mês</h2>
+
+        <div class="legenda">
+          <span class="doces">●</span> Doces
+          <span class="salgados">●</span> Salgados
+          <span class="bebidas">●</span> Bebidas
+        </div>
+
+        <div class="grafico">
+          <div class="mes">
+            <div class="barras">
+              <div>
+                <div>100</div>
+                <div class="barra doces" style="height: 200px"></div>
+              </div>
+              <div>
+                <div>110</div>
+                <div class="barra salgados" style="height: 220px"></div>
+              </div>
+              <div>
+                <div>70</div>
+                <div class="barra bebidas" style="height: 140px"></div>
+              </div>
+            </div>
+            <b>Janeiro</b>
+          </div>
+
+          <div class="mes">
+            <div class="barras">
+              <div>
+                <div>50</div>
+                <div class="barra doces" style="height: 100px"></div>
+              </div>
+              <div>
+                <div>60</div>
+                <div class="barra salgados" style="height: 120px"></div>
+              </div>
+              <div>
+                <div>50</div>
+                <div class="barra bebidas" style="height: 100px"></div>
+              </div>
+            </div>
+            <b>Fevereiro</b>
+          </div>
+
+          <div class="mes">
+            <div class="barras">
+              <div>
+                <div>80</div>
+                <div class="barra doces" style="height: 160px"></div>
+              </div>
+              <div>
+                <div>100</div>
+                <div class="barra salgados" style="height: 200px"></div>
+              </div>
+              <div>
+                <div>100</div>
+                <div class="barra bebidas" style="height: 200px"></div>
+              </div>
+            </div>
+            <b>Março</b>
+          </div>
+        </div>
+        <br />
+        <br />
+      </section>
+
+      <div id="div3">
+        <br />
+        <img id="imagemC" src="img/cocorico.png" />
+        <b class="tituloCoco" id="nomeLoja">Carregando...</b>
+        <p id="descricaoLojaTexto"></p>
+        <p id="horarioLojaTexto"></p>
+        <h2 class="estrelinha">★ ★ ★ ★</h2>
+        <button id="pause">⏸ Pausar Loja</button>
+        <br />
+        <button id="configurar">Configurar Loja</button>
+      </div>
+      <div id="div4">
+        <h2 class="tituluPedidos">Pedidos</h2>
+
+        <div class="coisoPedido">
+          <img class="fotoAluno" src="img/icone.png" />
+
+          <div class="info">
+            <p><b>Luiz Guilherme</b></p>
+            <p>2° ano 4</p>
+            <p>#MN-2010</p>
+          </div>
+
+          <img class="fotoCumida" src="img/coxinha.jpg" />
+        </div>
+
+        <div class="coisoPedido">
+          <img class="fotoAluno" src="img/icone.png" />
+
+          <div class="info">
+            <p><b>César Benício</b></p>
+            <p>1° ano 3</p>
+            <p>#C4-Z2L</p>
+          </div>
+
+          <img class="fotoCumida" src="img/emapda.jpg" />
+        </div>
+
+        <a href="" class="verMais">Ver mais</a>
+      </div>
+    </div>
+    <script src="navbar.js"></script>
+    <script src="minhaLoja.js"></script>
+  </body>
+</html>

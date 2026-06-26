@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configurar Loja</title>
+
+    <link rel="stylesheet" href="loja.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+ <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html">Início</a>
+        <a href="menu.html">Cardápio</a>
+        <a href="lojas.html">Lojas</a>
+      </nav>
+    </header>
+
+    <h2 id="aga2">Criar Loja</h2>
+
+    <div class="container">
+      <div id="configcaixa">
+        <form>
+          <label>Nome da Loja</label>
+          <input type="text" id="nomeLoja" placeholder="Digite o nome da loja" />
+
+          <label>Descrição</label>
+          <input type="text" id="descricaoLoja" placeholder="Digite uma descrição para a loja" />
+
+          <label>Foto da Loja</label>
+          <input type="file" />
+
+          <label>Responsável</label>
+          <input type="text" id="responsavel" placeholder="Ex. Cláudio Soares Machado" />
+
+          <label>Horário de funcionamento</label>
+          <input type="text" id="hor_func" placeholder="Ex. Das 6:00 às 7:00" />
+
+          <label>Email</label>
+          <input type="email" id="email" placeholder="email@email.com" />
+
+          <label>Senha</label>
+          <input type="password" id="senha" placeholder="********" />
+
+          <button onclick="criarLoja()">Criar Loja</button>
+          <p id="mensagemLoja"></p>
+
+        </form>
+      </div>
+    </div>
+    <script src="navbar.js"></script>
+    <script src="lojascriptcriar.js"></script>
+  </body>
+</html>

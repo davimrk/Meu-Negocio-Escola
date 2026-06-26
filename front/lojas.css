@@ -1,0 +1,86 @@
+@import url("theme.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--bg);
+  color: #1d1d1d;
+  min-height: 100vh;
+}
+
+
+.page-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.intro h2 {
+  font-size: 34px;
+  margin-bottom: 12px;
+  color: #0d2b4d;
+}
+
+.intro p {
+  font-size: 18px;
+  color: #444;
+}
+
+.lojas-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.loja-card {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 16px 30px rgba(13, 43, 77, 0.12);
+}
+
+.loja-card h3 {
+  margin-bottom: 8px;
+  color: #0d2b4d;
+  font-size: 24px;
+}
+
+.loja-card p {
+  margin-bottom: 10px;
+  color: #4d4d4d;
+  line-height: 1.5;
+}
+
+.loja-card .tag {
+  display: inline-block;
+  background: #ffda77;
+  color: #0d2b4d;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.empty-message {
+  text-align: center;
+  color: #555;
+  margin-top: 40px;
+  font-size: 18px;
+}
+
+@media (max-width: 580px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

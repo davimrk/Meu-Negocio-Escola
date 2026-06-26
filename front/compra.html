@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encomenda</title>
+
+    <!-- FONTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Carter+One&family=Luckiest+Guy&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="compra.css" />
+  </head>
+
+  <body>
+    <!--Morani-->
+    <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html">Início</a>
+        <a href="cardapio.html">Cardápio</a>
+        <a href="lojas.html">Lojas</a>
+      </nav>
+    </header>
+
+    <main class="card">
+      <h1 class="titulo">ENCOMENDA EFETUADA!</h1>
+
+      <div class="conteudo">
+        <div class="produto">
+          <img src="img/Chocolate-Cake-PNG-Download-Image-1.png" class="bolo" />
+          <h2>Bolo de Chocolate</h2>
+          <p class="preco">R$ 7,00</p>
+
+          <div class="qtd">
+            <span>Quantidade:</span>
+            <button>-</button>
+            <span id="quantidade">2</span>
+            <button>+</button>
+          </div>
+        </div>
+
+        <div class="mensagem">
+          <h2>Sua encomenda foi realizada com sucesso.</h2>
+          <p>O vendedor já foi informado e está preparando seu pedido.</p>
+        </div>
+      </div>
+
+      <div class="codigo-area">
+        <h2>SEU CÓDIGO:</h2>
+        <div class="codigo" id="codigo">#MN-2010</div>
+      </div>
+
+      <p class="rodape">Apresente o código na retirada.</p>
+    </main>
+
+    <script src="navbar.js"></script>
+    <script src="compra.js"></script>
+  </body>
+</html>
