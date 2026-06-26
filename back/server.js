@@ -436,6 +436,77 @@ WHERE produto.id_produto = ?
   });
 });
 
+app.post("/produtos", (req, res) => {
+ 
+    const { nome, tipo, preco } = req.body;
+ 
+    if (!nome || !tipo || !preco) {
+        return res.status(400).json({
+            erro: "Preencha todos os campos."
+        });
+    }
+ 
+    const sql =
+    "INSERT INTO produtos (nome, tipo, preco) VALUES (?, ?, ?)";
+ 
+    db.query(
+        sql,
+        [nome, tipo, preco],
+        (erro, resultado) => {
+ 
+            if (erro) {
+                return res.status(500).json(erro);
+            }
+ 
+            res.status(201).json({
+                mensagem: "Produto cadastrado.",
+                id: resultado.insertId
+            });
+        }
+    );
+});
+ 
+app.get("/produtos", (req, res) => {
+ 
+    db.query(
+        "SELECT * FROM produtos",
+        (erro, resultado) => {
+ 
+            if (erro) {
+                return res.status(500).json(erro);
+            }
+ 
+            res.json(resultado);
+        }
+    );
+});
+ 
+app.delete("/produtos/:id", (req, res) => {
+ 
+    const id = req.params.id;
+ 
+    db.query(
+        "DELETE FROM produtos WHERE id = ?",
+        [id],
+        (erro, resultado) => {
+ 
+            if (erro) {
+                return res.status(500).json(erro);
+            }
+ 
+            if (resultado.affectedRows === 0) {
+                return res.status(404).json({
+                    erro: "Produto não encontrado."
+                });
+            }
+ 
+            res.json({
+                mensagem: "Produto removido."
+            });
+        }
+    );
+});
+
 app.listen(3000, () => {
   console.log("Servidor rodando em http://localhost:3000");
 });
