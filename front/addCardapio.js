@@ -8,82 +8,78 @@ if (formProduto) {
 async function cadastrarProduto(event) {
   event.preventDefault();
 
+  const id_loja = localStorage.getItem("id_loja");
   const nome = document.getElementById("nome").value;
-  const tipo = document.getElementById("tipo").value;
+  const descricao = document.getElementById("descricao")?.value || "";
   const preco = Number(document.getElementById("preco").value);
-  const produto = { nome, tipo, preco };
 
-  try {
-    const resposta = await fetch(`${API}/produtos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(produto),
-    });
-
-    const dados = await resposta.json();
-
-    if (!resposta.ok) {
-      alert(dados.erro);
-      return;
-    }
-    alert("Produto cadastrado!");
-    formProduto.reset();
-
-    carregarProdutos();
-  } catch (erro) {
-    console.log(erro);
+  if (!id_loja) {
+    alert("Loja não encontrada. Faça login novamente.");
+    return;
   }
+
+  const produto = {
+    id_loja,
+    id_categoria: 1,
+    nome,
+    descricao,
+    preco,
+    foto: "",
+  };
+
+  const resposta = await fetch("http://localhost:3000/api/produtos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(produto),
+  });
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    alert(dados.erro);
+    return;
+  }
+
+  alert("Produto criado!");
+  carregarProdutos();
 }
 
 async function carregarProdutos() {
   const lista = document.getElementById("listaProdutos");
   if (!lista) return;
 
-  try {
-    const resposta = await fetch(`${API}/produtos`);
-    const produtos = await resposta.json();
-    lista.innerHTML = "";
+  const id_loja = localStorage.getItem("id_loja");
 
-    for (let produto of produtos) {
-      let imagemProduto = "coxaxinha.jpg";
+  if (!id_loja) {
+    lista.innerHTML = "Nenhuma loja encontrada";
+    return;
+  }
 
-      const nomeMinusculo = produto.nome.toLowerCase();
+  const resposta = await fetch(
+    `http://localhost:3000/api/produtos/loja/${id_loja}`,
+  );
 
-      if (
-        nomeMinusculo.includes("coca") ||
-        nomeMinusculo.includes("coquinha")
-      ) {
-        imagemProduto = "coquinha.jpg";
-      } else if (
-        nomeMinusculo.includes("bolo") ||
-        nomeMinusculo.includes("bolinho")
-      ) {
-        imagemProduto = "bolinho.jpeg";
-      }
-      lista.innerHTML += `
-                <div class="produto-card">
-                    <div class="produto-titulo">
-                        <img src="${imagemProduto}" class="produto-img-mini" alt="Foto">
-                        <h3>${produto.nome}</h3>
-                    </div>
-                   
-                    <p>Tipo: ${produto.tipo}</p>
-                    <p>Preço: R$ ${Number(produto.preco).toFixed(2)}</p>
- 
-                    <button onclick="removerProduto(${produto.id})">
-                        Remover
-                    </button>
-                </div>
-            `;
-    }
-  } catch (erro) {
-    console.log(erro);
+  const produtos = await resposta.json();
+
+  lista.innerHTML = "";
+
+  for (let produto of produtos) {
+    lista.innerHTML += `
+      <div class="produto-card">
+        <h3>${produto.nome}</h3>
+        <p>${produto.descricao || ""}</p>
+        <p>R$ ${Number(produto.preco).toFixed(2)}</p>
+        <small>${produto.categoria || ""}</small>
+      </div>
+    `;
   }
 }
 
 async function removerProduto(id) {
   try {
-    await fetch(`${API}/produtos/${id}`, {
+    await fetch(`${API}/api/produtos/${id}`, {
       method: "DELETE",
     });
 

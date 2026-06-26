@@ -95,13 +95,28 @@ if (botao) {
 
         localStorage.setItem("usuarioTipo", dados.usuario.tipo);
 
-        // empreendedor
         if (dados.usuario.id_empreendedor) {
-          localStorage.setItem(
-            "idEmpreendedor",
+          localStorage.setItem("idEmpreendedor", dados.usuario.id_empreendedor);
 
-            dados.usuario.id_empreendedor,
-          );
+          try {
+            const resLoja = await fetch(
+              `${API}/api/lojas?id_empreendedor=${dados.usuario.id_empreendedor}`,
+            );
+
+            const lojas = await resLoja.json();
+
+            if (lojas.length > 0) {
+              localStorage.setItem("id_loja", lojas[0].id_loja);
+            } else {
+              alert(
+                "Você ainda não tem uma loja. Crie uma antes de continuar.",
+              );
+              window.location.href = "create.html";
+              return;
+            }
+          } catch (err) {
+            console.log("Erro ao buscar loja:", err);
+          }
         }
 
         // redireciona

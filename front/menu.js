@@ -1,72 +1,32 @@
-const API = "http://localhost:3000";
+const container = document.getElementById("listaProdutos");
 
-const cardapio = document.getElementById("cardapio");
-const lista = document.getElementById("listaCarrinho2");
+async function carregarProdutos() {
 
-async function carregarCardapio(){
-
-    const idLoja = 1;
-
-    const resposta = await fetch(
-        `${API}/cardapio/${idLoja}`
-    );
-
+    const resposta = await fetch("http://localhost:3000/api/produtos");
     const produtos = await resposta.json();
 
-    cardapio.innerHTML="";
+    container.innerHTML = "";
 
-    produtos.forEach(produto=>{
+    produtos.forEach(produto => {
 
-        cardapio.innerHTML += `
+        const div = document.createElement("div");
 
-        <div class="card">
-
-            <img src="${produto.foto}">
-
-            <h2>${produto.nome}</h2>
-
+        div.innerHTML = `
+            <img src="${produto.foto}" width="100">
+            <h3>${produto.nome}</h3>
             <p>${produto.descricao}</p>
-
             <p>R$ ${produto.preco}</p>
-
-            <button onclick="
-                addCarrinho(
-                    '${produto.nome}',
-                    ${produto.preco}
-                )
-            ">
-                Adicionar
-            </button>
-
-        </div>
-
+            <small>${produto.loja}</small>
         `;
+
+        div.onclick = () => {
+            window.location.href = `produto.html?id=${produto.id_produto}`;
+        };
+
+        container.appendChild(div);
 
     });
 
 }
 
-function addCarrinho(nome, preco){
-
-    const item = document.createElement("li");
-
-    item.textContent =
-    `${nome} - R$ ${preco}`;
-
-    lista.appendChild(item);
-
-}
-
-carregarCardapio();
-
-const carrinho =
-document.getElementById("carrinho2");
-
-const btn =
-document.getElementById("btnCarrinho2");
-
-btn.addEventListener("click",()=>{
-
-    carrinho.classList.toggle("ativar");
-
-});
+carregarProdutos();
