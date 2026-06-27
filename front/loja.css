@@ -335,6 +335,22 @@ h3 {
   font-family: "Poppins";
 }
 
+#previewFotoLoja {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  margin-top: 10px;
+}
+
+#statusUploadLoja {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
 #configcaixa button {
   margin-top: 20px;
   background: #0d2b4d;

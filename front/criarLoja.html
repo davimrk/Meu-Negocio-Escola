@@ -14,7 +14,7 @@
   </head>
 
   <body>
- <header>
+    <header>
       <h1>Meu Negócio Escola</h1>
       <img src="img/escolalogo.png" id="logo" />
       <nav class="navbar">
@@ -30,16 +30,34 @@
       <div id="configcaixa">
         <form>
           <label>Nome da Loja</label>
-          <input type="text" id="nomeLoja" placeholder="Digite o nome da loja" />
+          <input
+            type="text"
+            id="nomeLoja"
+            placeholder="Digite o nome da loja"
+          />
 
           <label>Descrição</label>
-          <input type="text" id="descricaoLoja" placeholder="Digite uma descrição para a loja" />
+          <input
+            type="text"
+            id="descricaoLoja"
+            placeholder="Digite uma descrição para a loja"
+          />
 
           <label>Foto da Loja</label>
-          <input type="file" />
+          <input type="file" id="fotoLoja" accept="image/*" />
+          <img
+            id="previewFotoLoja"
+            alt="Pré-visualização"
+            style="display: none"
+          />
+          <p id="statusUploadLoja"></p>
 
           <label>Responsável</label>
-          <input type="text" id="responsavel" placeholder="Ex. Cláudio Soares Machado" />
+          <input
+            type="text"
+            id="responsavel"
+            placeholder="Ex. Cláudio Soares Machado"
+          />
 
           <label>Horário de funcionamento</label>
           <input type="text" id="hor_func" placeholder="Ex. Das 6:00 às 7:00" />
@@ -52,11 +70,11 @@
 
           <button onclick="criarLoja()">Criar Loja</button>
           <p id="mensagemLoja"></p>
-
         </form>
       </div>
     </div>
     <script src="navbar.js"></script>
-    <script src="lojascriptcriar.js"></script>
+    <script src="cloudinary.js"></script>
+    <script src="criarLoja.js"></script>
   </body>
 </html>

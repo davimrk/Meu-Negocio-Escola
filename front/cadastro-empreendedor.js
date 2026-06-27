@@ -42,10 +42,10 @@ document.addEventListener("DOMContentLoaded", function () {
           localStorage.setItem("idEmpreendedor", resultado.id_empreendedor);
         }
         // Atualiza também o tipo salvo localmente
-        localStorage.setItem("tipo", "empreendedor");
+        localStorage.setItem("usuarioTipo", "empreendedor");
 
         setTimeout(() => {
-          window.location.href = "create.html";
+          window.location.href = "criarLoja.html";
         }, 1500);
       }
     } catch (erro) {

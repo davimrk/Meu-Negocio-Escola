@@ -22,6 +22,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ATENÇÃO: substitua "chave" pela sua chave real da API Groq.
+// Sem isso, a rota /ia sempre vai falhar com erro de autenticação.
 const TOKEN = "chave";
 
 app.get("/", (req, res) => {
@@ -273,8 +275,14 @@ app.get("/api/lojas/:id", (req, res) => {
 
 // POST - criar loja (sem foto por enquanto)
 app.post("/api/lojas", (req, res) => {
-  const { id_empreendedor, nome, descricao, horario_funcionamento, ativa } =
-    req.body;
+  const {
+    id_empreendedor,
+    nome,
+    descricao,
+    horario_funcionamento,
+    ativa,
+    foto_logo,
+  } = req.body;
 
   if (!nome) {
     return res.status(400).json({ erro: "O campo 'nome' é obrigatório." });
@@ -282,8 +290,8 @@ app.post("/api/lojas", (req, res) => {
 
   const sql = `
     INSERT INTO Loja
-      (id_empreendedor, nome, descricao, horario_funcionamento, ativa)
-    VALUES (?, ?, ?, ?, ?)
+      (id_empreendedor, nome, descricao, horario_funcionamento, ativa, foto_logo)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
@@ -294,6 +302,7 @@ app.post("/api/lojas", (req, res) => {
       descricao || null,
       horario_funcionamento || null,
       ativa || "true",
+      foto_logo || null,
     ],
     (erro, resultado) => {
       if (erro) {
@@ -369,7 +378,7 @@ app.get("/cardapio/:idLoja", (req, res) => {
             produto.foto,
             categoria.nome AS categoria
         FROM Produto produto
-        INNER JOIN Categoria categoria
+        LEFT JOIN Categoria categoria
         ON produto.id_categoria = categoria.id_categoria
         WHERE produto.id_loja = ?
         AND produto.disponivel = 'sim'
@@ -386,6 +395,150 @@ app.get("/cardapio/:idLoja", (req, res) => {
     }
 
     res.json(dados);
+  });
+});
+
+// CATEGORIAS
+
+app.get("/api/categorias", (req, res) => {
+  db.query("SELECT * FROM Categoria ORDER BY nome", (erro, resultado) => {
+    if (erro) {
+      console.error(erro);
+      return res.status(500).json({ erro: "Erro ao buscar categorias." });
+    }
+    res.json(resultado);
+  });
+});
+
+// PRODUTOS
+
+app.post("/api/produtos", (req, res) => {
+  const { id_loja, id_categoria, nome, descricao, preco, foto } = req.body;
+
+  if (!id_loja || !nome || !preco) {
+    return res.status(400).json({
+      erro: "Preencha os campos obrigatórios",
+    });
+  }
+
+  const sql = `
+    INSERT INTO produto
+    (id_loja, id_categoria, nome, descricao, preco, foto, disponivel)
+    VALUES (?, ?, ?, ?, ?, ?, 'sim')
+  `;
+
+  db.query(
+    sql,
+    [
+      id_loja,
+      id_categoria || null,
+      nome,
+      descricao || null,
+      preco,
+      foto || null,
+    ],
+    (erro, resultado) => {
+      if (erro) {
+        console.error(erro);
+        return res.status(500).json({
+          erro: "Erro ao criar produto",
+        });
+      }
+
+      res.json({
+        mensagem: "Produto criado",
+        id_produto: resultado.insertId,
+      });
+    },
+  );
+});
+
+// GET /api/produtos
+// Filtros opcionais via query string:
+//   ?busca=coxinha        -> filtra pelo nome do produto
+//   ?id_categoria=2       -> filtra por categoria
+//   ?id_loja=3            -> filtra por loja específica
+// Sem filtro nenhum, a ordem vem embaralhada (cardápio com produtos de
+// todas as lojas em destaque aleatório).
+app.get("/api/produtos", (req, res) => {
+  const { busca, id_categoria, id_loja } = req.query;
+
+  let sql = `
+        SELECT
+            produto.id_produto,
+            produto.id_loja,
+            produto.id_categoria,
+            produto.nome,
+            produto.descricao,
+            produto.preco,
+            produto.foto,
+            loja.nome AS loja,
+            categoria.nome AS categoria
+        FROM produto
+        LEFT JOIN loja ON produto.id_loja = loja.id_loja
+        LEFT JOIN categoria ON produto.id_categoria = categoria.id_categoria
+        WHERE produto.disponivel = 'sim'
+    `;
+  const params = [];
+
+  if (busca) {
+    sql += " AND produto.nome LIKE ?";
+    params.push(`%${busca}%`);
+  }
+
+  if (id_categoria) {
+    sql += " AND produto.id_categoria = ?";
+    params.push(id_categoria);
+  }
+
+  if (id_loja) {
+    sql += " AND produto.id_loja = ?";
+    params.push(id_loja);
+  }
+
+  if (!busca && !id_categoria && !id_loja) {
+    sql += " ORDER BY RAND()";
+  } else {
+    sql += " ORDER BY produto.nome";
+  }
+
+  db.query(sql, params, (erro, resultado) => {
+    if (erro) {
+      console.log(erro);
+      return res.status(500).json({
+        erro: "Erro ao buscar produtos",
+      });
+    }
+
+    res.json(resultado);
+  });
+});
+
+// Produtos de uma loja específica (usado na tela "Adicionar Produto" da loja)
+app.get("/api/produtos/loja/:id_loja", (req, res) => {
+  const sql = `
+        SELECT
+            produto.id_produto,
+            produto.nome,
+            produto.descricao,
+            produto.preco,
+            produto.foto,
+            categoria.nome AS categoria
+        FROM produto
+        LEFT JOIN categoria ON produto.id_categoria = categoria.id_categoria
+        WHERE produto.id_loja = ?
+        ORDER BY produto.nome
+    `;
+
+  db.query(sql, [req.params.id_loja], (erro, resultado) => {
+    if (erro) {
+      console.log(erro);
+      return res.status(500).json({
+        erro: "Erro ao buscar produtos da loja",
+      });
+    }
+
+    res.json(resultado);
   });
 });
 
@@ -436,150 +589,29 @@ WHERE produto.id_produto = ?
   });
 });
 
-app.post("/produtos", (req, res) => {
- 
-    const { nome, tipo, preco } = req.body;
- 
-    if (!nome || !tipo || !preco) {
-        return res.status(400).json({
-            erro: "Preencha todos os campos."
+app.delete("/api/produtos/:id", (req, res) => {
+  const id = req.params.id;
+
+  db.query(
+    "DELETE FROM produto WHERE id_produto = ?",
+    [id],
+    (erro, resultado) => {
+      if (erro) {
+        console.error(erro);
+        return res.status(500).json(erro);
+      }
+
+      if (resultado.affectedRows === 0) {
+        return res.status(404).json({
+          erro: "Produto não encontrado.",
         });
-    }
- 
-    const sql =
-    "INSERT INTO produtos (nome, tipo, preco) VALUES (?, ?, ?)";
- 
-    db.query(
-        sql,
-        [nome, tipo, preco],
-        (erro, resultado) => {
- 
-            if (erro) {
-                return res.status(500).json(erro);
-            }
- 
-            res.status(201).json({
-                mensagem: "Produto cadastrado.",
-                id: resultado.insertId
-            });
-        }
-    );
-});
- 
-app.get("/produtos", (req, res) => {
- 
-    db.query(
-        "SELECT * FROM produtos",
-        (erro, resultado) => {
- 
-            if (erro) {
-                return res.status(500).json(erro);
-            }
- 
-            res.json(resultado);
-        }
-    );
-});
- 
-app.delete("/produtos/:id", (req, res) => {
- 
-    const id = req.params.id;
- 
-    db.query(
-        "DELETE FROM produtos WHERE id = ?",
-        [id],
-        (erro, resultado) => {
- 
-            if (erro) {
-                return res.status(500).json(erro);
-            }
- 
-            if (resultado.affectedRows === 0) {
-                return res.status(404).json({
-                    erro: "Produto não encontrado."
-                });
-            }
- 
-            res.json({
-                mensagem: "Produto removido."
-            });
-        }
-    );
-});
+      }
 
-app.post("/api/produtos", (req, res) => {
-  const {
-    id_loja,
-    id_categoria,
-    nome,
-    descricao,
-    preco,
-    foto
-  } = req.body;
-
-  if (!id_loja || !nome || !preco) {
-    return res.status(400).json({
-      erro: "Preencha os campos obrigatórios"
-    });
-  }
-
-  const sql = `
-    INSERT INTO produto
-    (id_loja, id_categoria, nome, descricao, preco, foto, disponivel)
-    VALUES (?, ?, ?, ?, ?, ?, 'sim')
-  `;
-
-  db.query(sql, [
-    id_loja,
-    id_categoria || null,
-    nome,
-    descricao || null,
-    preco,
-    foto || null
-  ], (erro, resultado) => {
-    if (erro) {
-      return res.status(500).json({
-        erro: "Erro ao criar produto"
+      res.json({
+        mensagem: "Produto removido.",
       });
-    }
-
-    res.json({
-      mensagem: "Produto criado",
-      id_produto: resultado.insertId
-    });
-  });
-});
-
-app.get("/api/produtos", (req, res) => {
-
-    const sql = `
-        SELECT
-            produto.id_produto,
-            produto.nome,
-            produto.descricao,
-            produto.preco,
-            produto.foto,
-            loja.nome AS loja,
-            categoria.nome AS categoria
-        FROM produto
-        LEFT JOIN loja ON produto.id_loja = loja.id_loja
-        LEFT JOIN categoria ON produto.id_categoria = categoria.id_categoria
-        WHERE produto.disponivel = 'sim'
-    `;
-
-    db.query(sql, (erro, resultado) => {
-
-        if (erro) {
-            console.log(erro);
-            return res.status(500).json({
-                erro: "Erro ao buscar produtos"
-            });
-        }
-
-        res.json(resultado);
-
-    });
-
+    },
+  );
 });
 
 app.listen(3000, () => {

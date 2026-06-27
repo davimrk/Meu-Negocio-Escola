@@ -54,29 +54,3 @@ async function enviar() {
     resultado.innerText = "Erro ao gerar resposta";
   }
 }
-
-const params = new URLSearchParams(window.location.search);
-
-const id = params.get("id");
-
-async function carregarProduto() {
-  try {
-    const resposta = await fetch(`http://localhost:3000/api/produtos/${id}`);
-
-    const produto = await resposta.json();
-
-    document.getElementById("nome").innerText = produto.nome;
-
-    document.getElementById("descricao").innerText = produto.descricao;
-
-    document.getElementById("preco").innerText = `R$ ${produto.preco}`;
-
-    document.getElementById("loja").innerText = produto.loja;
-
-    document.getElementById("imagem").src = produto.imagem;
-  } catch (erro) {
-    console.log(erro);
-  }
-}
-
-carregarProduto();

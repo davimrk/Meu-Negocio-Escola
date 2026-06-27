@@ -13,43 +13,29 @@
 <body>
      <header>
       <h1>Meu Negócio Escola</h1>
-      <img src="escolalogo.png" id="logo" />
+      <img src="img/escolalogo.png" id="logo" />
       <nav class="navbar">
         <a href="index.html">Início</a>
         <a href="menu.html">Cardápio</a>
         <a href="lojas.html">Lojas</a>
         <a href="login.html">Login</a>
         <a href="produto.html" class="active">Produto</a>
-        <a href="cadastro.html">Cadastre-se</a>
+        <a href="cadastroaluno.html">Cadastre-se</a>
         <a href="cadastroempreendedor.html">Seja um empreendedor!</a>
-        <button id="btnLoja"><a href="imdequis.html">Minha loja</a></button>
+        <button id="btnLoja"><a href="minhaLoja.html">Minha loja</a></button>
       </nav>
     </header>
- 
-    <section>
-        <h2 id="nomeProduto"></h2>
-        <p id="descricaoProduto"></p>
-        <p id="precoProduto"></p>
-        <button id="adicionarCarrinho">Adicionar ao Carrinho</button>
-        <a href="produto.html?id=25"></a>
+
+    <section class="detalheProduto">
+      <img id="imagem" alt="Foto do produto" />
+      <h1 id="nome"></h1>
+      <p id="descricao"></p>
+      <h2 id="preco"></h2>
+      <p>Loja: <span id="loja"></span></p>
+      <button id="adicionarCarrinho">Adicionar ao Carrinho</button>
     </section>
- 
-   <div>
-<img id="imagem">
 
-<h1 id="nome"></h1>
-
-<p id="descricao"></p>
-
-<h2 id="preco"></h2>
-
-<p>
-Loja:
-<span id="loja"></span>
-</p>
-   </div>
- 
-    <script src="script.js"></script>
+    <script src="produto.js"></script>
     <script src="navbar.js"></script>
 </body>
 </html>

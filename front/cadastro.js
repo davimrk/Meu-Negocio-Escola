@@ -4,12 +4,10 @@ const email = document.getElementById("email");
 const senha = document.getElementById("senha");
 const nome = document.getElementById("nome");
 const nascimento = document.getElementById("nascimento");
-const tipo = localStorage.getItem("tipo");
 const botao = document.querySelector(".button");
 
 const resultado = document.createElement("p");
 document.getElementById("fundo").appendChild(resultado);
-
 
 [email, senha, nome, nascimento].forEach((input) => {
   input.addEventListener("focus", () => {
@@ -20,7 +18,6 @@ document.getElementById("fundo").appendChild(resultado);
     input.style.border = "1px solid #ccc";
   });
 });
-
 
 botao.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -37,21 +34,19 @@ botao.addEventListener("click", async (e) => {
   await cadastrarAluno();
 });
 
-
 async function cadastrarAluno() {
   try {
     const resposta = await fetch(`${API}/usuarios`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         nome: nome.value,
         nascimento: nascimento.value,
         email: email.value,
         senha: senha.value,
-        tipo: tipo
-      })
+      }),
     });
 
     const dados = await resposta.json();
@@ -63,7 +58,6 @@ async function cadastrarAluno() {
 
     alert("Cadastro realizado com sucesso!");
     window.location.href = "index.html";
-
   } catch (erro) {
     console.log(erro);
     alert("Erro ao cadastrar.");

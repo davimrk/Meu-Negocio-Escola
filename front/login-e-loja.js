@@ -111,7 +111,7 @@ if (botao) {
               alert(
                 "Você ainda não tem uma loja. Crie uma antes de continuar.",
               );
-              window.location.href = "create.html";
+              window.location.href = "criarLoja.html";
               return;
             }
           } catch (err) {
@@ -121,7 +121,7 @@ if (botao) {
 
         // redireciona
         if (dados.usuario.tipo === "empreendedor") {
-          window.location.href = "minhaloja.html";
+          window.location.href = "minhaLoja.html";
         } else {
           window.location.href = "index.html";
         }

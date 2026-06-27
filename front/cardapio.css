@@ -9,192 +9,282 @@
   --border: rgba(13, 43, 77, 0.12);
   --details: #ffd700;
 }
- 
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
- 
+
 html {
   scroll-behavior: smooth;
 }
- 
+
+body {
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+}
+
+main {
+  width: min(900px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+
 .fundo-cardapio {
-    width: 95%;
-    max-width: 780px;
-    margin: 40px auto;
-    background: #f7ecd7;
-    border-radius: 30px;
-    padding: 35px;
-    box-shadow: 0 15px 35px rgba(87, 77, 77, 0.25);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
- 
+
+.botaoVoltar {
+  align-self: flex-start;
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.botaoVoltar:hover {
+  background: var(--bg);
+  transform: translateX(-2px);
+}
+
+/* ---------- Formulário ---------- */
+
 .form-cardapio {
-    width: 100%;
-    background: white;
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 20px rgba(104, 92, 92, 0.15);
-    padding: 30px;
+  background: var(--surface);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px rgba(13, 43, 77, 0.1);
+  padding: 32px;
 }
- 
+
 .form-cardapio h2 {
-    color: var(--primary);
-    margin-bottom: 25px;
-    text-align: center;
+  color: var(--primary);
+  font-family: "Carter One", cursive;
+  font-size: 1.6rem;
+  margin-bottom: 24px;
 }
- 
+
 #formProduto {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px 20px;
-    align-items: end;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 20px;
 }
- 
-.form-cardapio label:nth-of-type(1) {
-    grid-column: 1 / span 3;
-    grid-row: 1;
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
- 
-#nome {
-    grid-column: 1 / span 3;
-    grid-row: 2;
+
+.campo-descricao {
+  grid-column: 1 / -1;
 }
- 
-.form-cardapio label:nth-of-type(2) {
-    grid-column: 4;
-    grid-row: 1;
+
+.campo-foto {
+  grid-column: 1 / -1;
 }
- 
-#tipo {
-    grid-column: 4;
-    grid-row: 2;
+
+.campo-foto input[type="file"] {
+  height: auto;
+  padding: 10px 14px;
 }
- 
-.form-cardapio label:nth-of-type(3) {
-    grid-column: 1 / span 2;
-    grid-row: 3;
+
+#previewFoto {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  margin-top: 6px;
 }
- 
-#preco {
-    grid-column: 1 / span 2;
-    grid-row: 4;
+
+#statusUpload {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
 }
- 
-.form-cardapio button {
-    grid-column: 3 / span 2;
-    grid-row: 4;
-    width: 100%;
-    height: 44px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
+
+.campo label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--muted);
 }
- 
-.form-cardapio label {
-    color: var(--text);
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: -5px;
+
+.campo input,
+.campo select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
- 
-.form-cardapio input,
-.form-cardapio select {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 0.95rem;
-    outline: none;
-    height: 44px;
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(13, 43, 77, 0.1);
 }
- 
-.form-cardapio input:focus,
-.form-cardapio select:focus {
-    border-color: var(--primary);
+
+.botaoAdicionar {
+  grid-column: 1 / -1;
+  height: 48px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
- 
-.form-cardapio button:hover {
-    background: #143a63;
+
+.botaoAdicionar:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(208, 0, 0, 0.22);
 }
- 
+
+#mensagemProduto {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 1.2em;
+}
+
+/* ---------- Lista de produtos cadastrados ---------- */
+
+.secaoLista h3 {
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+
 #listaProdutos {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
 }
- 
+
+#listaProdutos p {
+  color: var(--muted);
+  grid-column: 1 / -1;
+}
+
 .produto-card {
-    width: 220px;
-    min-height: 220px;
-    background: white;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    box-shadow: 0 6px 15px rgba(104, 92, 92, 0.12);
-    padding: 20px;
-    transition: transform 0.2s;
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 24px rgba(13, 43, 77, 0.08);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
- 
+
+.produto-foto {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
 .produto-card:hover {
-    transform: translateY(-3px);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(13, 43, 77, 0.14);
 }
- 
-.produto-titulo {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 12px;
-}
- 
-.produto-img-mini {
-    width: 25px;
-    height: 25px;
-    object-fit: cover;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
- 
+
 .produto-card h3 {
-    color: var(--primary);
-    margin: 0;
-    font-size: 1.2rem;
-    line-height: 1.3;
-    flex: 1;
-    min-width: 0;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+  color: var(--primary);
+  font-size: 1.05rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
- 
+
 .produto-card p {
-    color: var(--text);
-    margin-bottom: 8px;
-    font-size: 0.95rem;
+  color: var(--text);
+  font-size: 0.9rem;
 }
- 
+
+.produto-card small {
+  display: inline-block;
+  align-self: flex-start;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
 .produto-card button {
-    width: 100%;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
-    margin-top: 10px;
+  margin-top: 6px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
- 
+
 .produto-card button:hover {
-    background: var(--accent-dark);
+  background: var(--accent);
+  color: white;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 640px) {
+  #formProduto {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-descricao {
+    grid-column: 1;
+  }
+
+  .campo-foto {
+    grid-column: 1;
+  }
+
+  .botaoAdicionar {
+    grid-column: 1;
+  }
+
+  #mensagemProduto {
+    grid-column: 1;
+  }
 }

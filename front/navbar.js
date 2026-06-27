@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const linkLogin = navbar.querySelector('a[href="login.html"]');
 
-  const linkCadastroAluno = navbar.querySelector('a[href="cadastro.html"]');
+  const linkCadastroAluno = navbar.querySelector(
+    'a[href="cadastroaluno.html"]',
+  );
 
   const linkCadastroEmpreendedor = navbar.querySelector(
     'a[href="cadastroempreendedor.html"]',

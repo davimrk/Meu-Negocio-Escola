@@ -1,54 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="cardapio.css">
-    <link rel="stylesheet" href="header.css">
-     <link
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="cardapio.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link
       href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Carter+One&family=Luckiest+Guy&family=Poppins&display=swap"
       rel="stylesheet"
     />
     <title>Document</title>
-</head>
-<body>
-   
-<header>
-  <h1>Cardápio</h1>
-  <img src="img/escolalogo.png" id="logo"/>
-</header>
-<br>
-<main>
-    <section class="fundo-cardapio">
+  </head>
+  <body>
+    <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html">Início</a>
+        <a href="menu.html">Cardápio</a>
+        <a href="lojas.html">Lojas</a>
+        <a href="minhaLoja.html">Minha Loja</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="fundo-cardapio">
+        <a href="minhaLoja.html" class="botaoVoltar"
+          >← Voltar para Minha Loja</a
+        >
+
         <div class="form-cardapio">
-            <h2>Adicionar Produto</h2>
-            <form id="formProduto">
- 
-                <label>Nome do Produto</label>
-                <input type="text" id="nome">
- 
-                <label>Tipo</label>
-                <select id="tipo">
-                    <option>Salgado</option>
-                    <option>Doce</option>
-                    <option>Bebida</option>
-                </select>
-             
-                <label>Preço</label>
- 
-                <input type="number" id="preco" step="0.01">
- 
-                <button type="submit">
-                    Adicionar Produto
-                </button>
- 
-            </form>
+          <h2>Adicionar Produto</h2>
+          <form id="formProduto">
+            <div class="campo campo-nome">
+              <label for="nome">Nome do Produto</label>
+              <input
+                type="text"
+                id="nome"
+                placeholder="Ex. Coxinha de frango"
+              />
+            </div>
+
+            <div class="campo campo-categoria">
+              <label for="tipo">Categoria</label>
+              <select id="tipo">
+                <option value="">Selecione uma categoria</option>
+              </select>
+            </div>
+
+            <div class="campo campo-descricao">
+              <label for="descricao">Descrição</label>
+              <input
+                type="text"
+                id="descricao"
+                placeholder="Ex. Recheio cremoso, frita na hora"
+              />
+            </div>
+
+            <div class="campo campo-foto">
+              <label for="fotoProduto">Foto do Produto</label>
+              <input type="file" id="fotoProduto" accept="image/*" />
+              <img
+                id="previewFoto"
+                alt="Pré-visualização"
+                style="display: none"
+              />
+              <p id="statusUpload"></p>
+            </div>
+
+            <div class="campo campo-preco">
+              <label for="preco">Preço (R$)</label>
+              <input
+                type="number"
+                id="preco"
+                step="0.01"
+                min="0"
+                placeholder="0,00"
+              />
+            </div>
+
+            <button type="submit" class="botaoAdicionar">
+              Adicionar Produto
+            </button>
+            <p id="mensagemProduto"></p>
+          </form>
         </div>
-        <div id="listaProdutos"></div>
- 
-    </section>
-</main>
-<script src="addCardapio.js"></script>
- 
-</body>
+
+        <div class="secaoLista">
+          <h3>Meus produtos cadastrados</h3>
+          <div id="listaProdutos"></div>
+        </div>
+      </section>
+    </main>
+    <script src="navbar.js"></script>
+    <script src="cloudinary.js"></script>
+    <script src="addCardapio.js"></script>
+  </body>
 </html>
