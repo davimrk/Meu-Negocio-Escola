@@ -56,6 +56,13 @@ async function cadastrarAluno() {
       return;
     }
 
+    // Loga automaticamente: salva a sessão com os dados que já temos,
+    // sem precisar pedir email/senha de novo numa tela de login separada.
+    localStorage.setItem("logado", "true");
+    localStorage.setItem("usuarioId", dados.id);
+    localStorage.setItem("usuarioNome", nome.value);
+    localStorage.setItem("usuarioTipo", "aluno");
+
     alert("Cadastro realizado com sucesso!");
     window.location.href = "index.html";
   } catch (erro) {

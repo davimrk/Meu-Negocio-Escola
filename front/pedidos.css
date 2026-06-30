@@ -1,0 +1,131 @@
+:root {
+  --bg: #f3f6fb;
+  --surface: #ffffff;
+  --primary: #0d2b4d;
+  --accent: #d00000;
+  --accent-dark: #9a0000;
+  --text: #15243b;
+  --muted: #4f6178;
+  --border: rgba(13, 43, 77, 0.12);
+  --pendente: #c98a00;
+  --pronta: #1f7a3f;
+  --retirada: #6b7280;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+}
+
+main {
+  width: min(800px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+
+.botaoVoltar {
+  display: inline-block;
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+
+.tituloPagina {
+  font-family: "Carter One", cursive;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+
+#listaPedidos p {
+  color: var(--muted);
+}
+
+.pedido-card {
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 24px rgba(13, 43, 77, 0.08);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.pedido-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.pedido-codigo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
+.pedido-status {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  color: white;
+}
+
+.status-pendente {
+  background: var(--pendente);
+}
+.status-pronta {
+  background: var(--pronta);
+}
+.status-retirada {
+  background: var(--retirada);
+}
+
+.pedido-cliente {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.pedido-itens {
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+.pedido-itens li {
+  font-size: 0.9rem;
+  padding: 2px 0;
+}
+
+.pedido-total {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.pedido-acoes button {
+  height: 40px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pedido-acoes button:hover {
+  background: var(--accent-dark);
+}

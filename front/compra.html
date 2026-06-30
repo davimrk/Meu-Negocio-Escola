@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Carter+One&family=Luckiest+Guy&family=Poppins&display=swap"
       rel="stylesheet"
     />
-
+    <link rel="stylesheet" href="header.css" />
     <link rel="stylesheet" href="compra.css" />
   </head>
 
@@ -31,32 +31,19 @@
     <main class="card">
       <h1 class="titulo">ENCOMENDA EFETUADA!</h1>
 
-      <div class="conteudo">
-        <div class="produto">
-          <img src="img/Chocolate-Cake-PNG-Download-Image-1.png" class="bolo" />
-          <h2>Bolo de Chocolate</h2>
-          <p class="preco">R$ 7,00</p>
+      <p class="mensagemGeral">
+        Sua encomenda foi realizada com sucesso. O(s) vendedor(es) já foi(ram)
+        informado(s) e está(ão) preparando seu pedido.
+      </p>
 
-          <div class="qtd">
-            <span>Quantidade:</span>
-            <button>-</button>
-            <span id="quantidade">2</span>
-            <button>+</button>
-          </div>
-        </div>
-
-        <div class="mensagem">
-          <h2>Sua encomenda foi realizada com sucesso.</h2>
-          <p>O vendedor já foi informado e está preparando seu pedido.</p>
-        </div>
+      <div id="listaEncomendas">
+        <!-- Um bloco por loja é inserido aqui pelo compra.js -->
       </div>
 
-      <div class="codigo-area">
-        <h2>SEU CÓDIGO:</h2>
-        <div class="codigo" id="codigo">#MN-2010</div>
-      </div>
-
-      <p class="rodape">Apresente o código na retirada.</p>
+      <p class="rodape">
+        Apresente o código correspondente na retirada de cada loja.
+      </p>
+      <p id="mensagemErroEncomenda" class="erroEncomenda"></p>
     </main>
 
     <script src="navbar.js"></script>

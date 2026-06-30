@@ -52,6 +52,21 @@ header {
   font-family: "Carter One", cursive;
 }
 
+.mensagemGeral {
+  text-align: center;
+  font-size: 18px;
+  color: #0b2a50;
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+.blocoEncomenda {
+  border: 2px dashed #c9c9c9;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
 /* CONTEÚDO CENTRALIZADO */
 .conteudo {
   display: flex;
@@ -79,9 +94,31 @@ header {
   font-family: "Baloo Chettan 2", cursive;
 }
 
+/* LISTA DE ITENS DA ENCOMENDA */
+.itens-encomenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+}
+
+.itens-encomenda .produto {
+  background: white;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  min-width: 160px;
+}
+
 /* QUANTIDADE */
 .qtd {
   margin-top: 10px;
+}
+
+.valorTotal {
+  margin-top: 14px;
+  font-weight: bold;
+  font-size: 22px;
 }
 
 /* MENSAGEM CENTRALIZADA */
@@ -90,6 +127,12 @@ header {
   font-size: 20px;
   color: #0b2a50;
   max-width: 500px;
+}
+
+.erroEncomenda {
+  color: #a31515;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 /* CÓDIGO */

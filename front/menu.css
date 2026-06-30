@@ -1,6 +1,5 @@
 @import url("theme.css");
 
-
 body {
   font-family: "Poppins", sans-serif;
   background: var(--bg);
@@ -18,9 +17,7 @@ body {
   grid-template-columns: repeat(3, 180px);
   justify-content: center;
   gap: 20px;
-
 }
-
 
 .produto {
   background: white;
@@ -30,6 +27,7 @@ body {
   transition: 0.3s;
   border: solid 2px;
   border-color: #0d2b4d;
+  cursor: pointer;
 }
 
 .produto:hover {

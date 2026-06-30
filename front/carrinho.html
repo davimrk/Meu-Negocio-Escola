@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Carrinho</title>
+
+    <link rel="stylesheet" href="header.css" />
+    <link rel="stylesheet" href="carrinho.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Carter+One&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+      <h1>Meu Negócio Escola</h1>
+      <img src="img/escolalogo.png" id="logo" />
+      <nav class="navbar">
+        <a href="index.html">Início</a>
+        <a href="menu.html">Cardápio</a>
+        <a href="lojas.html">Lojas</a>
+        <a href="login.html">Login</a>
+        <a href="cadastroaluno.html">Cadastre-se</a>
+        <a href="cadastroempreendedor.html">Seja um empreendedor!</a>
+      </nav>
+    </header>
+
+    <main>
+      <h2 class="tituloPagina">Meu Carrinho</h2>
+
+      <div id="listaCarrinho">
+        <!-- Itens preenchidos dinamicamente pelo carrinho.js -->
+      </div>
+
+      <div class="resumoCarrinho">
+        <p class="valorTotalCarrinho">Total: R$ <span id="valorTotalCarrinho">0,00</span></p>
+        <button id="btnEncomendar" class="botaoEncomendar">Encomendar AGORA</button>
+      </div>
+    </main>
+
+    <script src="navbar.js"></script>
+    <script src="carrinho.js"></script>
+  </body>
+</html>

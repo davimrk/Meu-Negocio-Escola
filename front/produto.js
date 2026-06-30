@@ -20,24 +20,42 @@ async function carregarProduto() {
   }
 }
 
-// Adiciona o produto carregado nesta página ao carrinho (armazenado em
-// localStorage, já que o carrinho ainda não é salvo no banco de dados).
-function adicionarAoCarrinho() {
+// Adiciona o produto carregado nesta página ao carrinho real (salvo no
+// banco de dados, vinculado ao usuário logado).
+async function adicionarAoCarrinho() {
   if (!produtoAtual) {
     alert("Produto ainda não carregado. Tente novamente.");
     return;
   }
 
-  const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  const id_usuario = localStorage.getItem("usuarioId");
 
-  carrinho.push({
-    nome: produtoAtual.nome,
-    preco: produtoAtual.preco,
-  });
+  if (!id_usuario) {
+    alert("Você precisa estar logado para adicionar itens ao carrinho.");
+    window.location.href = "login.html";
+    return;
+  }
 
-  localStorage.setItem("carrinho", JSON.stringify(carrinho));
+  try {
+    const resposta = await fetch("http://localhost:3000/api/carrinho/item", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id_usuario,
+        id_produto: produtoAtual.id,
+        quantidade: 1,
+      }),
+    });
 
-  alert(`${produtoAtual.nome} adicionado ao carrinho!`);
+    if (!resposta.ok) {
+      throw new Error("Erro ao adicionar ao carrinho");
+    }
+
+    alert(`${produtoAtual.nome} adicionado ao carrinho!`);
+  } catch (erro) {
+    console.log("Erro ao adicionar ao carrinho:", erro);
+    alert("Erro ao adicionar ao carrinho. Tente novamente.");
+  }
 }
 
 document
