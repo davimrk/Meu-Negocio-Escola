@@ -32,3 +32,8 @@ async function enviarImagemParaCloudinary(arquivo) {
   // secure_url é a URL pública (https) da imagem já hospedada
   return dados.secure_url;
 }
+
+// Alias para compatibilidade — ambos os nomes funcionam:
+// enviarImg(arquivo) e enviarImagemParaCloudinary(arquivo)
+const enviarImg = enviarImagemParaCloudinary;
+  

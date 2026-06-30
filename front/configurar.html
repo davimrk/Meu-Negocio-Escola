@@ -51,6 +51,23 @@
             id="horarioLoja"
             placeholder="Ex. Das 6:00 às 7:00"
           />
+          <label>Imagem</label>
+          <input
+            type="file"
+            id="imagemLoja"
+            placeholder="URL da imagem da loja"
+          />
+          <img
+            id="previewImagem"
+            style="
+              width: 180px;
+              height: 180px;
+              object-fit: cover;
+              margin-top: 10px;
+              border-radius: 10px;
+              display: none;
+            "
+          />
 
           <button type="submit">Salvar Alterações</button>
           <p id="mensagemConfigurar"></p>

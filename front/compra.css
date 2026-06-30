@@ -5,12 +5,6 @@ body {
   text-align: center;
 }
 
-/* HEADER */
-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
 
 #titulo1 {
   flex: 1;
@@ -21,11 +15,7 @@ header {
   font-family: "Luckiest Guy", cursive;
 }
 
-#logo {
-  background: white;
-  padding: 5px;
-  height: 60px;
-}
+
 
 #titulo2 {
   flex: 1;
@@ -36,7 +26,6 @@ header {
   font-family: "Luckiest Guy", cursive;
 }
 
-/* CARD */
 .card {
   background: #f3f3f3;
   margin: 30px;

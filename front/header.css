@@ -52,3 +52,60 @@ header img {
   background: var(--details);
   color: var(--primary);
 }
+
+.acoesLoja{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin:40px auto;
+    flex-wrap:wrap;
+}
+ 
+.botaoLoja{
+    width:220px;
+    height:90px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-decoration:none;
+    background:#1e3a8a;
+    color:#fff;
+    border-radius:18px;
+    box-shadow:0 8px 18px rgba(0,0,0,.18);
+    transition:.3s;
+    font-family:Arial, Helvetica, sans-serif;
+}
+ 
+.botaoLoja span{
+    font-size:30px;
+    margin-bottom:8px;
+}
+ 
+.botaoLoja p{
+    margin:0;
+    font-size:17px;
+    font-weight:600;
+}
+ 
+.botaoLoja:hover{
+    transform:translateY(-6px);
+    background:#2563eb;
+    box-shadow:0 14px 28px rgba(0,0,0,.25);
+}
+ 
+.botaoLoja:active{
+    transform:scale(.96);
+}
+ 
+@media(max-width:768px){
+    .acoesLoja{
+        flex-direction:column;
+    }
+    .botaoLoja{
+        width:90%;
+        max-width:320px;
+    }
+ 
+}

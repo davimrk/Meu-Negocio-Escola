@@ -2,13 +2,19 @@ const API = "http://localhost:3000/api/lojas";
 
 let idLojaAtual = null;
 let statusAtivaAtual = "true";
+let imgCloudinary = null;
 
-// Carrega os dados atuais da loja para preencher o formulário
+// =======================
+// DOM READY
+// =======================
 document.addEventListener("DOMContentLoaded", async function () {
   const idEmpreendedor = localStorage.getItem("idEmpreendedor");
 
+  const inputImagem = document.getElementById("imagemLoja");
+  const previewImagem = document.getElementById("previewImagem");
+
   if (!idEmpreendedor) {
-    alert("Você precisa ser um empreendedor logado para acessar esta página.");
+    alert("Você precisa estar logado.");
     window.location.href = "login.html";
     return;
   }
@@ -18,25 +24,59 @@ document.addEventListener("DOMContentLoaded", async function () {
     const lojas = await resposta.json();
 
     if (lojas.length === 0) {
-      alert("Você ainda não tem uma loja cadastrada.");
+      alert("Você não tem loja cadastrada.");
       window.location.href = "criarLoja.html";
       return;
     }
 
     const loja = lojas[0];
+
     idLojaAtual = loja.id_loja;
     statusAtivaAtual = loja.ativa || "true";
+    imgCloudinary = loja.foto_logo || "";
 
     document.getElementById("nomeLoja").value = loja.nome || "";
     document.getElementById("descricaoLoja").value = loja.descricao || "";
     document.getElementById("horarioLoja").value =
       loja.horario_funcionamento || "";
+
+    if (imgCloudinary) {
+      previewImagem.src = imgCloudinary;
+      previewImagem.style.display = "block";
+    }
+
   } catch (erro) {
-    console.error("Erro ao carregar dados da loja:", erro);
+    console.error("Erro ao carregar loja:", erro);
   }
+
+  inputImagem.addEventListener("change", async (event) => {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
+
+    // preview local imediato
+    const urlTemp = URL.createObjectURL(arquivo);
+    previewImagem.src = urlTemp;
+    previewImagem.style.display = "block";
+
+    try {
+      // upload Cloudinary (vem do cloudinary.js)
+      const urlCloud = await enviarImg(arquivo);
+
+      previewImagem.src = urlCloud;
+      imgCloudinary = urlCloud;
+
+      console.log("Upload concluído:", urlCloud);
+
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao enviar imagem");
+    }
+  });
 });
 
-// Salva as alterações feitas no formulário, usando PUT /api/lojas/:id
+// =======================
+// SALVAR ALTERAÇÕES
+// =======================
 async function salvarAlteracoes(event) {
   event.preventDefault();
 
@@ -44,16 +84,17 @@ async function salvarAlteracoes(event) {
   mensagem.textContent = "";
 
   if (!idLojaAtual) {
-    alert("Não foi possível identificar sua loja. Recarregue a página.");
+    alert("Loja não encontrada.");
     return;
   }
 
   const nome = document.getElementById("nomeLoja").value;
   const descricao = document.getElementById("descricaoLoja").value;
-  const horario_funcionamento = document.getElementById("horarioLoja").value;
+  const horario_funcionamento =
+    document.getElementById("horarioLoja").value;
 
   if (!nome) {
-    alert("O nome da loja é obrigatório.");
+    alert("Nome da loja é obrigatório.");
     return;
   }
 
@@ -66,6 +107,7 @@ async function salvarAlteracoes(event) {
         descricao,
         horario_funcionamento,
         ativa: statusAtivaAtual,
+        foto_logo: imgCloudinary,
       }),
     });
 
@@ -76,8 +118,8 @@ async function salvarAlteracoes(event) {
     mensagem.style.color = "green";
     mensagem.textContent = "Alterações salvas com sucesso!";
   } catch (erro) {
-    console.error("Erro ao salvar alterações:", erro);
+    console.error("Erro ao salvar:", erro);
     mensagem.style.color = "red";
-    mensagem.textContent = "Erro ao salvar alterações. Tente novamente.";
+    mensagem.textContent = "Erro ao salvar alterações.";
   }
 }

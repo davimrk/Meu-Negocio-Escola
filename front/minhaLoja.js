@@ -43,10 +43,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Usa a primeira loja encontrada (assumindo um empreendedor = uma loja por enquanto)
     const loja = lojas[0];
-
-    // Garante que id_loja sempre fique salvo, mesmo se o login antigo
-    // não tiver conseguido salvar (ex: cadastro de empreendedor que
-    // pulou direto para criar loja, sem passar pelo login).
     localStorage.setItem("id_loja", loja.id_loja);
 
     if (nomeLoja) nomeLoja.innerText = loja.nome;
@@ -65,3 +61,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (nomeLoja) nomeLoja.innerText = "Erro ao carregar loja";
   }
 });
+
+const botaoConfigurar = document.getElementById("configurar");
+if (botaoConfigurar) {
+  botaoConfigurar.addEventListener("click", function () {
+    window.location.href = "configurar.html";
+  });
+} 

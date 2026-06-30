@@ -40,7 +40,7 @@ async function criarLoja() {
     return;
   }
 
-  // Recupera o id_empreendedor salvo no login
+
   const idEmpreendedor = localStorage.getItem("idEmpreendedor");
 
   if (!idEmpreendedor) {
@@ -69,32 +69,52 @@ async function criarLoja() {
     }
   }
 
+  const id_empreendedor = localStorage.getItem("idEmpreendedor");
+
+if (!id_empreendedor) {
+    alert("Faça login novamente.");
+    window.location.href = "login.html";
+    return;
+}
+
+
   try {
-    const resposta = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nome,
-        descricao,
-        horario_funcionamento: hor_func,
-        id_empreendedor: idEmpreendedor,
-        ativa: "true",
-        foto_logo: fotoLogoUrl,
-      }),
-    });
+    const dados = {
+      id_empreendedor: Number(id_empreendedor),
+      nome: document.getElementById("nomeLoja").value,
+      descricao: document.getElementById("descricaoLoja").value,
+      horario_funcionamento: document.getElementById("hor_func").value,
+      ativa: 1
+    };
+
+    console.log("Enviando:", dados);
+
+    const resposta = await fetch(
+      "http://localhost:3000/api/lojas",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+      }
+    );
+
+    const resultado = await resposta.json();
+
+    console.log("Resposta:", resultado);
 
     if (!resposta.ok) {
-      throw new Error("Erro ao criar loja");
+      throw new Error(resultado.erro);
     }
 
-    const dados = await resposta.json();
+    alert("Loja criada!");
+  } catch (erro) {
+    console.error("Erro real:", erro);
+    alert(erro.message);
+  }
+}
 
-    // Salva o id_loja imediatamente, sem depender de um login futuro.
-    // Isso é essencial porque o cadastro de empreendedor leva direto para
-    // esta página, sem passar pelo fluxo de login.
-    if (dados.id_loja) {
-      localStorage.setItem("id_loja", dados.id_loja);
-    }
 
     mensagem.style.color = "green";
     mensagem.innerText = "Loja criada com sucesso! Redirecionando...";
@@ -109,9 +129,3 @@ async function criarLoja() {
     setTimeout(() => {
       window.location.href = "minhaLoja.html";
     }, 1200);
-  } catch (erro) {
-    console.error("Erro ao criar loja:", erro);
-    mensagem.style.color = "red";
-    mensagem.innerText = "Erro ao cadastrar loja. Tente novamente.";
-  }
-}

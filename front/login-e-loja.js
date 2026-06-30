@@ -48,11 +48,8 @@ if (botao) {
 
     async () => {
       const email = document.getElementById("email").value;
-
       const senha = document.getElementById("senha").value;
-
       const erro = document.getElementById("erro");
-
       erro.innerText = "";
 
       if (!email || !senha) {
@@ -84,52 +81,40 @@ if (botao) {
         }
 
         // limpa dados antigos
-        localStorage.removeItem("idEmpreendedor");
+localStorage.removeItem("idEmpreendedor");
 
-        // salva sessão
-        localStorage.setItem("logado", "true");
+localStorage.setItem("logado", "true");
+localStorage.setItem("usuarioId", dados.usuario.id);
+localStorage.setItem("usuarioNome", dados.usuario.nome);
+localStorage.setItem("usuarioTipo", dados.usuario.tipo);
 
-        localStorage.setItem("usuarioId", dados.usuario.id);
+localStorage.setItem(
+  "usuario",
+  JSON.stringify(dados.usuario)
+);
 
-        localStorage.setItem("usuarioNome", dados.usuario.nome);
+if (dados.usuario.id_empreendedor) {
+  localStorage.setItem(
+    "idEmpreendedor",
+    dados.usuario.id_empreendedor
+  );
+}
 
-        localStorage.setItem("usuarioTipo", dados.usuario.tipo);
-
-        if (dados.usuario.id_empreendedor) {
-          localStorage.setItem("idEmpreendedor", dados.usuario.id_empreendedor);
-
-          try {
-            const resLoja = await fetch(
-              `${API}/api/lojas?id_empreendedor=${dados.usuario.id_empreendedor}`,
-            );
-
-            const lojas = await resLoja.json();
-
-            if (lojas.length > 0) {
-              localStorage.setItem("id_loja", lojas[0].id_loja);
-            } else {
-              alert(
-                "Você ainda não tem uma loja. Crie uma antes de continuar.",
-              );
-              window.location.href = "criarLoja.html";
-              return;
-            }
-          } catch (err) {
-            console.log("Erro ao buscar loja:", err);
-          }
-        }
-
+if (dados.usuario.tipo === "empreendedor") {
+  window.location.href = "minhaLoja.html";
+} else {
+  window.location.href = "index.html";
+}
         // redireciona
         if (dados.usuario.tipo === "empreendedor") {
           window.location.href = "minhaLoja.html";
         } else {
           window.location.href = "index.html";
         }
-      } catch (err) {
-        console.log(err);
-
-        erro.innerText = "Erro no servidor.";
+    
+      } catch (erro) {
+        console.error("Erro ao fazer login:", erro);
+        erro.innerText = "Erro ao fazer login. Tente novamente.";
       }
     },
-  );
-}
+  )};

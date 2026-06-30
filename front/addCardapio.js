@@ -5,7 +5,6 @@ if (formProduto) {
   formProduto.addEventListener("submit", cadastrarProduto);
 }
 
-// Protege a página: só empreendedores logados podem cadastrar produtos
 document.addEventListener("DOMContentLoaded", function () {
   const idEmpreendedor = localStorage.getItem("idEmpreendedor");
 
@@ -15,8 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Carrega as categorias reais do banco no <select>, usando o id_categoria
-// como value (em vez do texto fixo Salgado/Doce/Bebida que havia antes)
 async function carregarCategorias() {
   const select = document.getElementById("tipo");
   if (!select) return;
