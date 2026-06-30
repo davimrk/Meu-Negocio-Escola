@@ -22,8 +22,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ATENÇÃO: substitua "chave" pela sua chave real da API Groq.
-// Sem isso, a rota /ia sempre vai falhar com erro de autenticação.
 const TOKEN = "chave";
 
 app.get("/", (req, res) => {
@@ -113,7 +111,6 @@ app.post("/usuarios", (req, res) => {
   });
 });
 
-// LOGIN - agora também retorna id_empreendedor quando o usuário é um empreendedor
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
@@ -130,7 +127,6 @@ app.post("/login", (req, res) => {
 
     const usuario = resultado[0];
 
-    // Se o usuário for do tipo empreendedor, busca o id_empreendedor vinculado
     if (usuario.tipo === "empreendedor") {
       const sqlEmpreendedor =
         "SELECT id_empreendedor FROM Empreendedor WHERE id_usuario = ?";
@@ -168,8 +164,6 @@ app.post("/login", (req, res) => {
   });
 });
 
-// Cadastro de empreendedor - exige que a pessoa já tenha um Usuario (esteja logada)
-// A tabela Empreendedor só tem: id_empreendedor, id_usuario, cpf, tipo
 app.post("/empreendedor", (req, res) => {
   const { id_usuario, cpf } = req.body;
 
@@ -186,7 +180,6 @@ app.post("/empreendedor", (req, res) => {
     });
   }
 
-  // Confirma que o usuário existe antes de criar o vínculo
   const sqlBuscaUsuario = "SELECT id_usuario FROM Usuario WHERE id_usuario = ?";
 
   db.query(sqlBuscaUsuario, [id_usuario], (erro, resultadoUsuario) => {
@@ -231,8 +224,6 @@ app.post("/empreendedor", (req, res) => {
     );
   });
 });
-
-// LOJAS
 
 app.get("/api/lojas", (req, res) => {
   const { id_empreendedor } = req.query;
@@ -295,7 +286,6 @@ app.post("/api/lojas", (req, res) => {
     });
   }
 
-  // verifica se empreendedor existe
   const verifica = `
   SELECT id_empreendedor
   FROM Empreendedor
@@ -442,8 +432,6 @@ app.get("/cardapio/:idLoja", (req, res) => {
   });
 });
 
-// CATEGORIAS
-
 app.get("/api/categorias", (req, res) => {
   db.query("SELECT * FROM Categoria ORDER BY nome", (erro, resultado) => {
     if (erro) {
@@ -453,8 +441,6 @@ app.get("/api/categorias", (req, res) => {
     res.json(resultado);
   });
 });
-
-// PRODUTOS
 
 app.post("/api/produtos", (req, res) => {
   const { id_loja, id_categoria, nome, descricao, preco, foto } = req.body;
@@ -742,7 +728,6 @@ app.post("/api/carrinho/item", (req, res) => {
       }
 
       if (resultado.length > 0) {
-        // Produto já está no carrinho: soma a quantidade
         const novaQuantidade = resultado[0].quantidade + qtd;
 
         db.query(
@@ -758,7 +743,6 @@ app.post("/api/carrinho/item", (req, res) => {
           },
         );
       } else {
-        // Produto novo no carrinho: insere uma linha nova
         db.query(
           "INSERT INTO itemcarrinho (id_carrinho, id_produto, quantidade) VALUES (?, ?, ?)",
           [id_carrinho, id_produto, qtd],
