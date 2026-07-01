@@ -47,44 +47,18 @@ if (inputFotoLoja) {
 }
 
 async function criarLoja() {
+  const mensagem = document.getElementById("mensagemLoja");
+  const statusUploadLoja = document.getElementById("statusUploadLoja");
+
+  mensagem.innerText = "";
+
   const nome = document.getElementById("nomeLoja").value;
   const descricao = document.getElementById("descricaoLoja").value;
   const hor_func = document.getElementById("hor_func").value;
-  const mensagem = document.getElementById("mensagemLoja");
-
-  mensagem.innerText = "";
 
   if (!nome || !descricao || !hor_func) {
     alert("Preencha todos os campos.");
     return;
-  }
-
-  const idEmpreendedor = localStorage.getItem("idEmpreendedor");
-
-  if (!idEmpreendedor) {
-    alert("Você precisa estar logado como empreendedor para criar uma loja.");
-    return;
-  }
-
-  // Se uma foto foi escolhida, envia para o Cloudinary primeiro e usa
-  // a URL pública retornada. O backend só recebe esse link como texto.
-  const statusUploadLoja = document.getElementById("statusUploadLoja");
-  let fotoLogoUrl = "";
-
-  const arquivoFotoLoja = inputFotoLoja?.files[0];
-
-  if (arquivoFotoLoja) {
-    try {
-      if (statusUploadLoja) statusUploadLoja.textContent = "Enviando foto...";
-      fotoLogoUrl = await enviarImagemParaCloudinary(arquivoFotoLoja);
-      if (statusUploadLoja) statusUploadLoja.textContent = "Foto enviada!";
-    } catch (erro) {
-      console.error("Erro ao enviar imagem da loja:", erro);
-      if (statusUploadLoja) {
-        statusUploadLoja.textContent =
-          "Erro ao enviar a foto. A loja será criada sem imagem.";
-      }
-    }
   }
 
   const id_empreendedor = localStorage.getItem("idEmpreendedor");
@@ -95,18 +69,40 @@ async function criarLoja() {
     return;
   }
 
+  let fotoLogoUrl = "";
+
+  const arquivoFotoLoja = inputFotoLoja?.files[0];
+
+  if (arquivoFotoLoja) {
+    try {
+      statusUploadLoja.textContent = "Enviando foto...";
+
+      fotoLogoUrl = await enviarImagemParaCloudinary(
+        arquivoFotoLoja
+      );
+
+      statusUploadLoja.textContent = "Foto enviada!";
+    } catch (erro) {
+      console.log("Erro Cloudinary:", erro);
+
+      statusUploadLoja.textContent =
+        "Erro ao enviar foto";
+    }
+  }
+
   try {
     const dados = {
       id_empreendedor: Number(id_empreendedor),
-      nome: document.getElementById("nomeLoja").value,
-      descricao: document.getElementById("descricaoLoja").value,
-      horario_funcionamento: document.getElementById("hor_func").value,
-      ativa: 1,
+      nome,
+      descricao,
+      horario_funcionamento: hor_func,
+      foto_logo: fotoLogoUrl,
+      ativa: "true",
     };
 
     console.log("Enviando:", dados);
 
-    const resposta = await fetch("http://localhost:3000/api/lojas", {
+    const resposta = await fetch(API, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,29 +112,27 @@ async function criarLoja() {
 
     const resultado = await resposta.json();
 
-    console.log("Resposta:", resultado);
-
     if (!resposta.ok) {
       throw new Error(resultado.erro);
     }
 
-    alert("Loja criada!");
+    localStorage.setItem(
+      "id_loja",
+      resultado.id_loja
+    );
+
+    mensagem.style.color = "green";
+    mensagem.innerText =
+      "Loja criada com sucesso!";
+
+    setTimeout(() => {
+      window.location.href = "minhaLoja.html";
+    }, 1200);
+
   } catch (erro) {
-    console.error("Erro real:", erro);
-    alert(erro.message);
+    console.log(erro);
+
+    mensagem.style.color = "red";
+    mensagem.innerText = erro.message;
   }
 }
-
-mensagem.style.color = "green";
-mensagem.innerText = "Loja criada com sucesso! Redirecionando...";
-
-document.getElementById("nomeLoja").value = "";
-document.getElementById("descricaoLoja").value = "";
-document.getElementById("hor_func").value = "";
-document.getElementById("responsavel").value = "";
-if (previewFotoLoja) previewFotoLoja.style.display = "none";
-if (statusUploadLoja) statusUploadLoja.textContent = "";
-
-setTimeout(() => {
-  window.location.href = "minhaLoja.html";
-}, 1200);

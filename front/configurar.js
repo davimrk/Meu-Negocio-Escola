@@ -67,29 +67,29 @@ btnModo.addEventListener("click", () => {
     }
 });
 
-  inputImagem.addEventListener("change", async (event) => {
-    const arquivo = event.target.files[0];
-    if (!arquivo) return;
+ inputImagem.addEventListener("change", async (event) => {
+  const arquivo = event.target.files[0];
+  if (!arquivo) return;
 
-    // preview local imediato
-    const urlTemp = URL.createObjectURL(arquivo);
-    previewImagem.src = urlTemp;
-    previewImagem.style.display = "block";
+  // preview local imediato
+  const urlTemp = URL.createObjectURL(arquivo);
+  previewImagem.src = urlTemp;
+  previewImagem.style.display = "block";
 
-    try {
-      // upload Cloudinary (vem do cloudinary.js)
-      const urlCloud = await enviarImg(arquivo);
+  try {
+    const urlCloud = await enviarImagemParaCloudinary(arquivo);
 
-      previewImagem.src = urlCloud;
-      imgCloudinary = urlCloud;
+    previewImagem.src = urlCloud;
+    imgCloudinary = urlCloud;
 
-      console.log("Upload concluído:", urlCloud);
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao enviar imagem");
-    }
-  });
+    console.log("Upload concluído:", urlCloud);
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao enviar imagem");
+  }
 });
+
+}); // fecha o DOMContentLoaded
 
 // =======================
 // SALVAR ALTERAÇÕES
@@ -138,4 +138,4 @@ async function salvarAlteracoes(event) {
     mensagem.style.color = "red";
     mensagem.textContent = "Erro ao salvar alterações.";
   }
-}
+};

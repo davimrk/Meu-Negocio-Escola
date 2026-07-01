@@ -1,23 +1,23 @@
-const API = "http://localhost:3000";
+const API = "http://localhost:3000/api/lojas";
 const formProduto = document.getElementById("formProduto");
 
 const btnModo = document.getElementById("modoEscuro");
- 
+
 if (localStorage.getItem("tema") === "dark") {
-    document.body.classList.add("dark");
-    btnModo.innerHTML = "☀️";
+  document.body.classList.add("dark");
+  btnModo.innerHTML = "☀️";
 }
- 
+
 btnModo.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
- 
-    if (document.body.classList.contains("dark")) {
-        btnModo.innerHTML = "☀️";
-        localStorage.setItem("tema", "dark");
-    } else {
-        btnModo.innerHTML = "🌙";
-        localStorage.setItem("tema", "light");
-    }
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+    localStorage.setItem("tema", "dark");
+  } else {
+    btnModo.innerHTML = "🌙";
+    localStorage.setItem("tema", "light");
+  }
 });
 
 if (formProduto) {
@@ -75,7 +75,20 @@ async function cadastrarProduto(event) {
   const mensagem = document.getElementById("mensagemProduto");
   if (mensagem) mensagem.textContent = "";
 
-  const id_loja = localStorage.getItem("id_loja");
+  const idEmpreendedor = localStorage.getItem("idEmpreendedor");
+
+  const respostaLoja = await fetch(
+    `${API}/api/lojas?id_empreendedor=${idEmpreendedor}`,
+  );
+
+  const lojas = await respostaLoja.json();
+
+  if (lojas.length === 0) {
+    alert("Nenhuma loja encontrada");
+    return;
+  }
+
+  const id_loja = lojas[0].id_loja;
   const nome = document.getElementById("nome").value;
   const descricao = document.getElementById("descricao")?.value || "";
   const id_categoria = document.getElementById("tipo").value;
