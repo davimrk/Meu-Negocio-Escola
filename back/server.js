@@ -1,15 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const SALT_ROUNDS = 10;
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "MNE",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 db.connect((erro) => {
@@ -25,7 +28,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const TOKEN = "chave";
+const TOKEN = process.env.GROQ_API_KEY;
 
 app.get("/", (req, res) => {
   res.json({ mensagem: "API funcionando!" });
@@ -915,6 +918,35 @@ app.put("/api/encomendas/:id/status", (req, res) => {
       }
     },
   );
+});
+
+
+app.get("/:id", (req, res) => {
+  const { id } = req.params;
+
+  const sql = `
+    SELECT 
+      produtos.*,
+      loja.nome AS loja
+    FROM produto
+    LEFT JOIN loja
+      ON produto.id_loja = loja.id_loja
+    WHERE produto.id_produto = ?
+  `;
+
+  db.query(sql, [id], (erro, resultado) => {
+    if (erro) {
+      return res.status(500).json(erro);
+    }
+
+    if (resultado.length === 0) {
+      return res.status(404).json({
+        erro: "Produto não encontrado"
+      });
+    }
+
+    res.json(resultado[0]);
+  });
 });
 
 app.listen(3000, () => {

@@ -2,20 +2,25 @@ const API = "http://localhost:3000";
 
 const botao2 = document.getElementById("botao2");
 const botao3 = document.getElementById("botao3");
-const lista = document.getElementById("listaCarrinho");
 const btnModo = document.getElementById("modoEscuro");
-
-btnModo.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-
-  if (document.body.classList.contains("dark")) {
+ 
+if (localStorage.getItem("tema") === "dark") {
+    document.body.classList.add("dark");
     btnModo.innerHTML = "☀️";
-  } else {
-    btnModo.innerHTML = "🌙";
-  }
+}
+ 
+btnModo.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+ 
+    if (document.body.classList.contains("dark")) {
+        btnModo.innerHTML = "☀️";
+        localStorage.setItem("tema", "dark");
+    } else {
+        btnModo.innerHTML = "🌙";
+        localStorage.setItem("tema", "light");
+    }
 });
 
-const carrinho = document.getElementById("carrinho");
 const botao4 = document.getElementById("btnCarrinho");
 botao4.addEventListener("click", function () {
   if (carrinho.style.display === "none") {

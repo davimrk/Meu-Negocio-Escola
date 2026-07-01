@@ -48,17 +48,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.error("Erro ao carregar loja:", erro);
   }
 
-  const btnModo = document.getElementById("modoEscuro");
-
-  btnModo.addEventListener("click", () => {
+const btnModo = document.getElementById("modoEscuro");
+ 
+if (localStorage.getItem("tema") === "dark") {
+    document.body.classList.add("dark");
+    btnModo.innerHTML = "☀️";
+}
+ 
+btnModo.addEventListener("click", () => {
     document.body.classList.toggle("dark");
-
+ 
     if (document.body.classList.contains("dark")) {
-      btnModo.innerHTML = "☀️";
+        btnModo.innerHTML = "☀️";
+        localStorage.setItem("tema", "dark");
     } else {
-      btnModo.innerHTML = "🌙";
+        btnModo.innerHTML = "🌙";
+        localStorage.setItem("tema", "light");
     }
-  });
+});
 
   inputImagem.addEventListener("change", async (event) => {
     const arquivo = event.target.files[0];

@@ -1,24 +1,24 @@
 @import url("theme.css");
-
+ 
 body {
   font-family: "Poppins", sans-serif;
   background: var(--bg);
   text-align: center;
 }
-
+ 
 .topo h2 {
   font-family: "Carter One", cursive;
   margin: 20px;
   color: var(--primary);
 }
-
+ 
 .menu {
   display: grid;
   grid-template-columns: repeat(3, 180px);
   justify-content: center;
   gap: 20px;
 }
-
+ 
 .produto {
   background: white;
   padding: 12px;
@@ -29,11 +29,11 @@ body {
   border-color: #0d2b4d;
   cursor: pointer;
 }
-
+ 
 .produto:hover {
   transform: scale(1.05);
 }
-
+ 
 .produto img {
   width: 70px;
   height: 70px;
@@ -41,26 +41,33 @@ body {
   justify-self: center;
   object-fit: cover;
 }
-
+ 
 .produto h3 {
   font-family: "Carter One", cursive;
   font-size: 16px;
   margin: 8px 0;
   color: var(--primary);
 }
-
+ 
 .preco {
   font-family: "Baloo Chettan 2", cursive;
   color: red;
   font-size: 16px;
   margin: 0;
 }
-
+ 
 .info {
   font-size: 12px;
   color: #555;
   margin: 0;
 }
+ 
+.descricao{
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+ 
 #btnCarrinho2 {
   position: fixed;
   right: 20px;
@@ -75,7 +82,7 @@ body {
   cursor: pointer;
   transition: 0.3s;
 }
-
+ 
 #btnCarrinho2:hover {
   background: darkred;
   transform: scale(1.1);
@@ -93,11 +100,11 @@ body {
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
-
+ 
 #carrinho2.ativar {
   display: block;
 }
-
+ 
 .botoes {
   padding: 5px;
   border: solid 2px #0d2b4d;
@@ -109,10 +116,63 @@ body {
   transition: 0.3s;
   color: var(--primary);
 }
-
+ 
 .botoes:hover {
   transform: scale(1.03);
   transition: 0.3s;
   background-color: rgb(197, 219, 238);
   color: var(--primary);
+}
+ 
+body.dark{
+    background:#08192b;
+    color:white;
+    transition:.5s;
+}
+ 
+body.dark .topo h2{
+    color:white;
+}
+ 
+body.dark .produto{
+    background:#742222;
+    border-color:#e0bebe;
+    color:#e0d6be;
+    transition:0.5s;
+}
+ 
+body.dark .produto h3{
+    color:#ffffff;
+}
+ 
+body.dark .preco{
+    color:#358dff;
+}
+ 
+body.dark .info{
+    color:white;
+}
+ 
+body.dark .botoes{
+    background:#0d2b4d;
+    color:#e0d6be;
+    border-color:#e0d6be;
+}
+ 
+body.dark .botoes:hover{
+    background:#1c365e;
+}
+ 
+body.dark #btnCarrinho2{
+    background:#0d2b4d;
+    color:white;
+}
+ 
+body.dark #btnCarrinho2:hover{
+    background:#1c365e;
+}
+ 
+body.dark #carrinho2{
+    background:#1f1f1f;
+    color:white;
 }

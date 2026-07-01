@@ -3,15 +3,22 @@ const API = "http://localhost:3000";
 const params = new URLSearchParams(window.location.search);
 
 const btnModo = document.getElementById("modoEscuro");
-
-btnModo.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-
-  if (document.body.classList.contains("dark")) {
+ 
+if (localStorage.getItem("tema") === "dark") {
+    document.body.classList.add("dark");
     btnModo.innerHTML = "☀️";
-  } else {
-    btnModo.innerHTML = "🌙";
-  }
+}
+ 
+btnModo.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+ 
+    if (document.body.classList.contains("dark")) {
+        btnModo.innerHTML = "☀️";
+        localStorage.setItem("tema", "dark");
+    } else {
+        btnModo.innerHTML = "🌙";
+        localStorage.setItem("tema", "light");
+    }
 });
 
 // O parâmetro "id" pode conter mais de um id_encomenda, separados por

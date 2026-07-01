@@ -84,3 +84,41 @@ body {
     align-items: flex-start;
   }
 }
+
+body.dark{
+    background:#08192b;
+    color:white;
+    transition:.5s;
+}
+ 
+body.dark .intro h2{
+    color:white;
+}
+ 
+body.dark .intro p{
+    color:#e0d6be;
+}
+ 
+body.dark .loja-card{
+    background:#e0d6be;
+    color:#721010;
+    transition:.5s;
+}
+ 
+body.dark .loja-card h3{
+    color:#6d0f0f;
+}
+ 
+body.dark .loja-card p{
+    color:rgb(66, 32, 32);
+}
+ 
+body.dark .tag{
+    background:#0d2b4d;
+    color:#e0d6be;
+}
+ 
+body.dark .empty-message{
+    color:rgb(80, 3, 3);
+}
+ 

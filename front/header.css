@@ -123,3 +123,8 @@ header img {
 #modoEscuro:hover {
   transform: rotate(180deg) scale(1.1);
 }
+
+body.dark header{
+  transition: 0.5s;
+  background-color: #4d0d0d;;
+}

@@ -265,3 +265,90 @@ p {
   font-size: 18px;
   font-family: "Baloo Chettan 2", cursive;
 }
+
+body.dark {
+  transition: 0.5s;
+  background: #08192b;
+  color: white;
+}
+
+body.dark .card {
+  background: #742222;
+  color: #e0d6be;
+}
+
+body.dark .card h2 {
+  color: #e0d6be;
+}
+
+body.dark .promo {
+  background-color: #1c365e;
+}
+
+body.dark .promo h2 {
+  transition: 0.5s;
+  color: rgb(97, 10, 10);
+}
+
+body.dark .claro {
+  background: #e0d6be;
+  color: #742222;
+}
+
+body.dark #claro h3 {
+  transition: 0.5s;
+  color: rgb(88, 28, 28);
+}
+
+body.dark .topo h2 {
+  color: white;
+}
+
+body.dark .reason {
+  background: #1f1f1f;
+  color: white;
+}
+
+body.dark .reason h3 {
+  color: white;
+}
+
+body.dark input {
+  background: #2c2c2c;
+  color: white;
+  border-color: #b11414;
+}
+
+body.dark input:focus {
+  transition: 0.5s;
+  background: #2c2c2c;
+  color: white;
+  border-color: #0d2b4d;
+  box-shadow: 0 0 10px #0d2b4d;
+}
+
+body.dark #resultado {
+  background: #2c2c2c;
+  color: white;
+}
+
+body.dark #verMais {
+  background-color: #0d2b4d;
+}
+
+body.dark #botao2 {
+  background-color: #0d2b4d;
+}
+
+body.dark #botao3 {
+  background-color: #0d2b4d;
+}
+
+body.dark #pedir {
+  background-color: #d00000;
+}
+
+body.dark #pedir:hover {
+  background-color: #0d2b4d;
+  box-shadow: 0 0 10px #0d2b4d;
+}

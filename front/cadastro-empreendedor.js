@@ -3,17 +3,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const avisoLogin = document.getElementById("avisoLogin");
   const idUsuario = localStorage.getItem("usuarioId");
 
-  const btnModo = document.getElementById("modoEscuro");
-
-  btnModo.addEventListener("click", () => {
+const btnModo = document.getElementById("modoEscuro");
+ 
+if (localStorage.getItem("tema") === "dark") {
+    document.body.classList.add("dark");
+    btnModo.innerHTML = "☀️";
+}
+ 
+btnModo.addEventListener("click", () => {
     document.body.classList.toggle("dark");
-
+ 
     if (document.body.classList.contains("dark")) {
-      btnModo.innerHTML = "☀️";
+        btnModo.innerHTML = "☀️";
+        localStorage.setItem("tema", "dark");
     } else {
-      btnModo.innerHTML = "🌙";
+        btnModo.innerHTML = "🌙";
+        localStorage.setItem("tema", "light");
     }
-  });
+});
 
   // Se a pessoa não estiver logada, bloqueia o formulário e avisa
   if (!idUsuario) {
