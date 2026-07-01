@@ -3,21 +3,17 @@ const API = "http://localhost:3000";
 const botao2 = document.getElementById("botao2");
 const botao3 = document.getElementById("botao3");
 const lista = document.getElementById("listaCarrinho");
+const btnModo = document.getElementById("modoEscuro");
 
-function addcart(nome, preco) {
-  const item = document.createElement("li");
-  item.textContent = nome + " - R$" + preco;
-  lista.appendChild(item);
-}
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
 
-botao2.addEventListener("click", function () {
-  addcart("Coxinha", 5);
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
 });
-botao3.addEventListener("click", function () {
-  addcart("Coca-Cola", 3.5);
-});
-
-//pagina inicial, carrinho (Davi)//
 
 const carrinho = document.getElementById("carrinho");
 const botao4 = document.getElementById("btnCarrinho");

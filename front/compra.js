@@ -1,6 +1,19 @@
 const API = "http://localhost:3000";
 
 const params = new URLSearchParams(window.location.search);
+
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 // O parâmetro "id" pode conter mais de um id_encomenda, separados por
 // vírgula, quando a compra envolveu mais de uma loja de uma vez.
 const idsEncomendas = (params.get("id") || "")

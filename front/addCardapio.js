@@ -1,6 +1,18 @@
 const API = "http://localhost:3000";
 const formProduto = document.getElementById("formProduto");
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 if (formProduto) {
   formProduto.addEventListener("submit", cadastrarProduto);
 }

@@ -1,5 +1,17 @@
 const API = "http://localhost:3000/api/lojas";
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 document.addEventListener("DOMContentLoaded", async function () {
   // Mostra o nome do empreendedor logado
   const nomeEmpreendedor = localStorage.getItem("usuarioNome");
@@ -67,4 +79,4 @@ if (botaoConfigurar) {
   botaoConfigurar.addEventListener("click", function () {
     window.location.href = "configurar.html";
   });
-} 
+}

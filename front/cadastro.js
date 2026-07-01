@@ -9,6 +9,18 @@ const botao = document.querySelector(".button");
 const resultado = document.createElement("p");
 document.getElementById("fundo").appendChild(resultado);
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 [email, senha, nome, nascimento].forEach((input) => {
   input.addEventListener("focus", () => {
     input.style.border = "2px solid blue";

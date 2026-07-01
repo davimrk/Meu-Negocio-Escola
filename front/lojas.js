@@ -1,5 +1,17 @@
 const API_URL = "http://localhost:3000/api/lojas";
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 async function carregarLojas() {
   const lista = document.getElementById("lojasList");
   const empty = document.getElementById("emptyMessage");

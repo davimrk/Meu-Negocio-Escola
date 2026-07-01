@@ -1,5 +1,17 @@
 const API = "http://localhost:3000/api/lojas";
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 // Protege a página: só empreendedores logados podem acessar criarLoja.html
 document.addEventListener("DOMContentLoaded", function () {
   const idEmpreendedor = localStorage.getItem("idEmpreendedor");
@@ -40,7 +52,6 @@ async function criarLoja() {
     return;
   }
 
-
   const idEmpreendedor = localStorage.getItem("idEmpreendedor");
 
   if (!idEmpreendedor) {
@@ -71,12 +82,11 @@ async function criarLoja() {
 
   const id_empreendedor = localStorage.getItem("idEmpreendedor");
 
-if (!id_empreendedor) {
+  if (!id_empreendedor) {
     alert("Faça login novamente.");
     window.location.href = "login.html";
     return;
-}
-
+  }
 
   try {
     const dados = {
@@ -84,21 +94,18 @@ if (!id_empreendedor) {
       nome: document.getElementById("nomeLoja").value,
       descricao: document.getElementById("descricaoLoja").value,
       horario_funcionamento: document.getElementById("hor_func").value,
-      ativa: 1
+      ativa: 1,
     };
 
     console.log("Enviando:", dados);
 
-    const resposta = await fetch(
-      "http://localhost:3000/api/lojas",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-      }
-    );
+    const resposta = await fetch("http://localhost:3000/api/lojas", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dados),
+    });
 
     const resultado = await resposta.json();
 
@@ -115,17 +122,16 @@ if (!id_empreendedor) {
   }
 }
 
+mensagem.style.color = "green";
+mensagem.innerText = "Loja criada com sucesso! Redirecionando...";
 
-    mensagem.style.color = "green";
-    mensagem.innerText = "Loja criada com sucesso! Redirecionando...";
+document.getElementById("nomeLoja").value = "";
+document.getElementById("descricaoLoja").value = "";
+document.getElementById("hor_func").value = "";
+document.getElementById("responsavel").value = "";
+if (previewFotoLoja) previewFotoLoja.style.display = "none";
+if (statusUploadLoja) statusUploadLoja.textContent = "";
 
-    document.getElementById("nomeLoja").value = "";
-    document.getElementById("descricaoLoja").value = "";
-    document.getElementById("hor_func").value = "";
-    document.getElementById("responsavel").value = "";
-    if (previewFotoLoja) previewFotoLoja.style.display = "none";
-    if (statusUploadLoja) statusUploadLoja.textContent = "";
-
-    setTimeout(() => {
-      window.location.href = "minhaLoja.html";
-    }, 1200);
+setTimeout(() => {
+  window.location.href = "minhaLoja.html";
+}, 1200);

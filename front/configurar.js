@@ -44,10 +44,21 @@ document.addEventListener("DOMContentLoaded", async function () {
       previewImagem.src = imgCloudinary;
       previewImagem.style.display = "block";
     }
-
   } catch (erro) {
     console.error("Erro ao carregar loja:", erro);
   }
+
+  const btnModo = document.getElementById("modoEscuro");
+
+  btnModo.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+      btnModo.innerHTML = "☀️";
+    } else {
+      btnModo.innerHTML = "🌙";
+    }
+  });
 
   inputImagem.addEventListener("change", async (event) => {
     const arquivo = event.target.files[0];
@@ -66,7 +77,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       imgCloudinary = urlCloud;
 
       console.log("Upload concluído:", urlCloud);
-
     } catch (err) {
       console.error(err);
       alert("Erro ao enviar imagem");
@@ -90,8 +100,7 @@ async function salvarAlteracoes(event) {
 
   const nome = document.getElementById("nomeLoja").value;
   const descricao = document.getElementById("descricaoLoja").value;
-  const horario_funcionamento =
-    document.getElementById("horarioLoja").value;
+  const horario_funcionamento = document.getElementById("horarioLoja").value;
 
   if (!nome) {
     alert("Nome da loja é obrigatório.");

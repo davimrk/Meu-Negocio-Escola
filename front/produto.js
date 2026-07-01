@@ -3,6 +3,18 @@ const id = params.get("id");
 
 let produtoAtual = null;
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 async function carregarProduto() {
   try {
     const resposta = await fetch(`http://localhost:3000/api/produtos/${id}`);

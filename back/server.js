@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
+const bcrypt = require("bcrypt");
+
+const SALT_ROUNDS = 10;
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -32,23 +35,27 @@ app.post("/ia", async (req, res) => {
   try {
     const mensagem = req.body.mensagem;
 
-    const resposta = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-        "Content-Type": "application/json",
+    const resposta = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "system",
+              content:
+                "Você é uma IA de cantina escolar divertida. Recomende apenas itens vendidos numa escola.",
+            },
+            { role: "user", content: mensagem },
+          ],
+        }),
       },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-          {
-            role: "system",
-            content: "Você é uma IA de cantina escolar divertida. Recomende apenas itens vendidos numa escola.",
-          },
-          { role: "user", content: mensagem },
-        ],
-      }),
-    });
+    );
 
     const dados = await resposta.json();
     res.json(dados);
@@ -58,120 +65,162 @@ app.post("/ia", async (req, res) => {
   }
 });
 
-app.post("/usuarios", (req, res) => {
+app.post("/usuarios", async (req, res) => {
   const { nome, nascimento, email, senha } = req.body;
 
   if (!nome || !nascimento || !email || !senha) {
     return res.status(400).json({ erro: "Preencha todos os campos." });
   }
 
-  db.query("select * from Usuario where email = ?", [email], (erro, resultado) => {
-    if (erro) return res.status(500).json(erro);
+  db.query(
+    "select * from Usuario where email = ?",
+    [email],
+    async (erro, resultado) => {
+      if (erro) return res.status(500).json(erro);
 
-    if (resultado.length > 0) {
-      return res.status(400).json({ erro: "Este email já está cadastrado." });
-    }
+      if (resultado.length > 0) {
+        return res.status(400).json({ erro: "Este email já está cadastrado." });
+      }
 
-    db.query(
-      "insert into Usuario (nome, nascimento, email, senha, tipo) values (?, ?, ?, ?, ?)",
-      [nome, nascimento, email, senha, "aluno"],
-      (erro, resultado) => {
-        if (erro) return res.status(500).json(erro);
+      try {
+        // gera o hash da senha antes de gravar no banco (nunca salvamos a senha em texto puro)
+        const senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
 
-        res.status(201).json({
-          mensagem: "Usuário cadastrado com sucesso",
-          id: resultado.insertId,
-        });
-      },
-    );
-  });
+        db.query(
+          "insert into Usuario (nome, nascimento, email, senha, tipo) values (?, ?, ?, ?, ?)",
+          [nome, nascimento, email, senhaHash, "aluno"],
+          (erro, resultado) => {
+            if (erro) return res.status(500).json(erro);
+
+            res.status(201).json({
+              mensagem: "Usuário cadastrado com sucesso",
+              id: resultado.insertId,
+            });
+          },
+        );
+      } catch (erroHash) {
+        console.error("Erro ao gerar hash da senha:", erroHash);
+        res.status(500).json({ erro: "Erro ao processar cadastro." });
+      }
+    },
+  );
 });
 
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
-  db.query("SELECT * FROM Usuario WHERE email = ? AND senha = ?", [email, senha], (erro, resultado) => {
-    if (erro) return res.status(500).json({ erro: "Erro no servidor" });
-    if (resultado.length === 0) return res.status(401).json({ erro: "Login inválido" });
+  if (!email || !senha) {
+    return res.status(400).json({ erro: "Preencha e-mail e senha." });
+  }
 
-    const usuario = resultado[0];
+  // agora buscamos só pelo email; a senha é conferida separadamente com bcrypt
+  db.query(
+    "SELECT * FROM Usuario WHERE email = ?",
+    [email],
+    async (erro, resultado) => {
+      if (erro) return res.status(500).json({ erro: "Erro no servidor" });
+      if (resultado.length === 0)
+        return res.status(401).json({ erro: "Login inválido" });
 
-    if (usuario.tipo === "empreendedor") {
-      db.query(
-        "SELECT id_empreendedor FROM Empreendedor WHERE id_usuario = ?",
-        [usuario.id_usuario],
-        (erro2, resultado2) => {
-          if (erro2) return res.status(500).json({ erro: "Erro no servidor" });
+      const usuario = resultado[0];
 
-          const id_empreendedor = resultado2.length > 0 ? resultado2[0].id_empreendedor : null;
+      const senhaConfere = await bcrypt.compare(senha, usuario.senha);
+      if (!senhaConfere) {
+        return res.status(401).json({ erro: "Login inválido" });
+      }
 
-          return res.json({
-            mensagem: "Login realizado",
-            usuario: {
-              id: usuario.id_usuario,
-              nome: usuario.nome,
-              email: usuario.email,
-              tipo: usuario.tipo,
-              id_empreendedor,
-            },
-          });
-        },
-      );
-    } else {
-      return res.json({
-        mensagem: "Login realizado",
-        usuario: {
-          id: usuario.id_usuario,
-          nome: usuario.nome,
-          email: usuario.email,
-          tipo: usuario.tipo,
-        },
-      });
-    }
-  });
+      if (usuario.tipo === "empreendedor") {
+        db.query(
+          "SELECT id_empreendedor FROM Empreendedor WHERE id_usuario = ?",
+          [usuario.id_usuario],
+          (erro2, resultado2) => {
+            if (erro2)
+              return res.status(500).json({ erro: "Erro no servidor" });
+
+            const id_empreendedor =
+              resultado2.length > 0 ? resultado2[0].id_empreendedor : null;
+
+            return res.json({
+              mensagem: "Login realizado",
+              usuario: {
+                id: usuario.id_usuario,
+                nome: usuario.nome,
+                email: usuario.email,
+                tipo: usuario.tipo,
+                id_empreendedor,
+              },
+            });
+          },
+        );
+      } else {
+        return res.json({
+          mensagem: "Login realizado",
+          usuario: {
+            id: usuario.id_usuario,
+            nome: usuario.nome,
+            email: usuario.email,
+            tipo: usuario.tipo,
+          },
+        });
+      }
+    },
+  );
 });
 
 app.post("/empreendedor", (req, res) => {
   const { id_usuario, cpf } = req.body;
 
   if (!id_usuario) {
-    return res.status(400).json({ mensagem: "É necessário estar logado para se cadastrar como empreendedor." });
+    return res
+      .status(400)
+      .json({
+        mensagem:
+          "É necessário estar logado para se cadastrar como empreendedor.",
+      });
   }
 
   if (!cpf) {
     return res.status(400).json({ mensagem: "O campo CPF é obrigatório." });
   }
 
-  db.query("SELECT id_usuario FROM Usuario WHERE id_usuario = ?", [id_usuario], (erro, resultadoUsuario) => {
-    if (erro) {
-      console.log(erro);
-      return res.status(500).json({ mensagem: erro.message });
-    }
+  db.query(
+    "SELECT id_usuario FROM Usuario WHERE id_usuario = ?",
+    [id_usuario],
+    (erro, resultadoUsuario) => {
+      if (erro) {
+        console.log(erro);
+        return res.status(500).json({ mensagem: erro.message });
+      }
 
-    if (resultadoUsuario.length === 0) {
-      return res.status(404).json({ mensagem: "Usuário não encontrado." });
-    }
+      if (resultadoUsuario.length === 0) {
+        return res.status(404).json({ mensagem: "Usuário não encontrado." });
+      }
 
-    db.query(
-      "INSERT INTO Empreendedor (cpf, id_usuario, tipo) VALUES (?, ?, ?)",
-      [cpf, id_usuario, "empreendedor"],
-      (erro2, resultado) => {
-        if (erro2) {
-          console.log(erro2);
-          return res.status(500).json({ mensagem: erro2.message });
-        }
+      db.query(
+        "INSERT INTO Empreendedor (cpf, id_usuario, tipo) VALUES (?, ?, ?)",
+        [cpf, id_usuario, "empreendedor"],
+        (erro2, resultado) => {
+          if (erro2) {
+            console.log(erro2);
+            return res.status(500).json({ mensagem: erro2.message });
+          }
 
-        db.query("UPDATE Usuario SET tipo = ? WHERE id_usuario = ?", ["empreendedor", id_usuario], (erro3) => {
-          if (erro3) console.log(erro3);
+          db.query(
+            "UPDATE Usuario SET tipo = ? WHERE id_usuario = ?",
+            ["empreendedor", id_usuario],
+            (erro3) => {
+              if (erro3) console.log(erro3);
 
-          res.json({
-            mensagem: "Empreendedor cadastrado!",
-            id_empreendedor: resultado.insertId,
-          });
-        });
-      },
-    );
-  });
+              res.json({
+                mensagem: "Empreendedor cadastrado!",
+                id_empreendedor: resultado.insertId,
+              });
+            },
+          );
+        },
+      );
+    },
+  );
 });
 
 app.get("/api/lojas", (req, res) => {
@@ -195,24 +244,44 @@ app.get("/api/lojas", (req, res) => {
 });
 
 app.get("/api/lojas/:id", (req, res) => {
-  db.query("SELECT * FROM Loja WHERE id_loja = ?", [req.params.id], (erro, resultado) => {
-    if (erro) {
-      console.error(erro);
-      return res.status(500).json({ erro: "Erro ao buscar loja." });
-    }
-    if (resultado.length === 0) return res.status(404).json({ erro: "Loja não encontrada." });
-    res.json(resultado[0]);
-  });
+  db.query(
+    "SELECT * FROM Loja WHERE id_loja = ?",
+    [req.params.id],
+    (erro, resultado) => {
+      if (erro) {
+        console.error(erro);
+        return res.status(500).json({ erro: "Erro ao buscar loja." });
+      }
+      if (resultado.length === 0)
+        return res.status(404).json({ erro: "Loja não encontrada." });
+      res.json(resultado[0]);
+    },
+  );
 });
 
 app.post("/api/lojas", (req, res) => {
-  const { id_empreendedor, nome, descricao, horario_funcionamento, ativa, foto_logo } = req.body;
+  const {
+    id_empreendedor,
+    nome,
+    descricao,
+    horario_funcionamento,
+    ativa,
+    foto_logo,
+  } = req.body;
 
-  if (!nome) return res.status(400).json({ erro: "O campo 'nome' é obrigatório." });
+  if (!nome)
+    return res.status(400).json({ erro: "O campo 'nome' é obrigatório." });
 
   db.query(
     "INSERT INTO Loja (id_empreendedor, nome, descricao, horario_funcionamento, ativa, foto_logo) VALUES (?, ?, ?, ?, ?, ?)",
-    [id_empreendedor || null, nome, descricao || null, horario_funcionamento || null, ativa || "true", foto_logo || null],
+    [
+      id_empreendedor || null,
+      nome,
+      descricao || null,
+      horario_funcionamento || null,
+      ativa || "true",
+      foto_logo || null,
+    ],
     (erro, resultado) => {
       if (erro) {
         console.error(erro);
@@ -228,27 +297,40 @@ app.put("/api/lojas/:id", (req, res) => {
 
   db.query(
     "UPDATE Loja SET nome = ?, descricao = ?, horario_funcionamento = ?, ativa = ?, foto_logo = ? WHERE id_loja = ?",
-    [nome, descricao, horario_funcionamento, ativa, foto_logo || null, req.params.id],
+    [
+      nome,
+      descricao,
+      horario_funcionamento,
+      ativa,
+      foto_logo || null,
+      req.params.id,
+    ],
     (erro, resultado) => {
       if (erro) {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao atualizar loja." });
       }
-      if (resultado.affectedRows === 0) return res.status(404).json({ erro: "Loja não encontrada." });
+      if (resultado.affectedRows === 0)
+        return res.status(404).json({ erro: "Loja não encontrada." });
       res.json({ mensagem: "Loja atualizada com sucesso." });
     },
   );
 });
 
 app.delete("/api/lojas/:id", (req, res) => {
-  db.query("DELETE FROM Loja WHERE id_loja = ?", [req.params.id], (erro, resultado) => {
-    if (erro) {
-      console.error(erro);
-      return res.status(500).json({ erro: "Erro ao remover loja." });
-    }
-    if (resultado.affectedRows === 0) return res.status(404).json({ erro: "Loja não encontrada." });
-    res.json({ mensagem: "Loja removida com sucesso." });
-  });
+  db.query(
+    "DELETE FROM Loja WHERE id_loja = ?",
+    [req.params.id],
+    (erro, resultado) => {
+      if (erro) {
+        console.error(erro);
+        return res.status(500).json({ erro: "Erro ao remover loja." });
+      }
+      if (resultado.affectedRows === 0)
+        return res.status(404).json({ erro: "Loja não encontrada." });
+      res.json({ mensagem: "Loja removida com sucesso." });
+    },
+  );
 });
 
 app.get("/cardapio/:idLoja", (req, res) => {
@@ -289,7 +371,14 @@ app.post("/api/produtos", (req, res) => {
 
   db.query(
     "INSERT INTO produto (id_loja, id_categoria, nome, descricao, preco, foto, disponivel) VALUES (?, ?, ?, ?, ?, ?, 'sim')",
-    [id_loja, id_categoria || null, nome, descricao || null, preco, foto || null],
+    [
+      id_loja,
+      id_categoria || null,
+      nome,
+      descricao || null,
+      preco,
+      foto || null,
+    ],
     (erro, resultado) => {
       if (erro) {
         console.error(erro);
@@ -314,11 +403,23 @@ app.get("/api/produtos", (req, res) => {
   `;
   const params = [];
 
-  if (busca) { sql += " AND produto.nome LIKE ?"; params.push(`%${busca}%`); }
-  if (id_categoria) { sql += " AND produto.id_categoria = ?"; params.push(id_categoria); }
-  if (id_loja) { sql += " AND produto.id_loja = ?"; params.push(id_loja); }
+  if (busca) {
+    sql += " AND produto.nome LIKE ?";
+    params.push(`%${busca}%`);
+  }
+  if (id_categoria) {
+    sql += " AND produto.id_categoria = ?";
+    params.push(id_categoria);
+  }
+  if (id_loja) {
+    sql += " AND produto.id_loja = ?";
+    params.push(id_loja);
+  }
 
-  sql += (!busca && !id_categoria && !id_loja) ? " ORDER BY RAND()" : " ORDER BY produto.nome";
+  sql +=
+    !busca && !id_categoria && !id_loja
+      ? " ORDER BY RAND()"
+      : " ORDER BY produto.nome";
 
   db.query(sql, params, (erro, resultado) => {
     if (erro) {
@@ -359,7 +460,8 @@ app.get("/api/produtos/:id", (req, res) => {
 
   db.query(sql, [req.params.id], (erro, resultado) => {
     if (erro) return res.status(500).json({ erro: "Erro ao buscar produto" });
-    if (resultado.length === 0) return res.status(404).json({ erro: "Produto não encontrado" });
+    if (resultado.length === 0)
+      return res.status(404).json({ erro: "Produto não encontrado" });
 
     res.json({
       id: resultado[0].id_produto,
@@ -373,14 +475,19 @@ app.get("/api/produtos/:id", (req, res) => {
 });
 
 app.delete("/api/produtos/:id", (req, res) => {
-  db.query("DELETE FROM produto WHERE id_produto = ?", [req.params.id], (erro, resultado) => {
-    if (erro) {
-      console.error(erro);
-      return res.status(500).json(erro);
-    }
-    if (resultado.affectedRows === 0) return res.status(404).json({ erro: "Produto não encontrado." });
-    res.json({ mensagem: "Produto removido." });
-  });
+  db.query(
+    "DELETE FROM produto WHERE id_produto = ?",
+    [req.params.id],
+    (erro, resultado) => {
+      if (erro) {
+        console.error(erro);
+        return res.status(500).json(erro);
+      }
+      if (resultado.affectedRows === 0)
+        return res.status(404).json({ erro: "Produto não encontrado." });
+      res.json({ mensagem: "Produto removido." });
+    },
+  );
 });
 
 function buscarOuCriarCarrinhoAberto(id_usuario, callback) {
@@ -412,7 +519,8 @@ app.get("/api/carrinho/:id_usuario", (req, res) => {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao buscar carrinho." });
       }
-      if (resultadoCarrinho.length === 0) return res.json({ id_carrinho: null, itens: [] });
+      if (resultadoCarrinho.length === 0)
+        return res.json({ id_carrinho: null, itens: [] });
 
       const id_carrinho = resultadoCarrinho[0].id_carrinho;
 
@@ -427,7 +535,9 @@ app.get("/api/carrinho/:id_usuario", (req, res) => {
         (erro2, itens) => {
           if (erro2) {
             console.error(erro2);
-            return res.status(500).json({ erro: "Erro ao buscar itens do carrinho." });
+            return res
+              .status(500)
+              .json({ erro: "Erro ao buscar itens do carrinho." });
           }
           res.json({ id_carrinho, itens });
         },
@@ -441,7 +551,9 @@ app.post("/api/carrinho/item", (req, res) => {
   const qtd = Number(quantidade) || 1;
 
   if (!id_usuario || !id_produto) {
-    return res.status(400).json({ erro: "id_usuario e id_produto são obrigatórios." });
+    return res
+      .status(400)
+      .json({ erro: "id_usuario e id_produto são obrigatórios." });
   }
 
   buscarOuCriarCarrinhoAberto(id_usuario, (erro, id_carrinho) => {
@@ -466,7 +578,9 @@ app.post("/api/carrinho/item", (req, res) => {
             (erro3) => {
               if (erro3) {
                 console.error(erro3);
-                return res.status(500).json({ erro: "Erro ao atualizar item." });
+                return res
+                  .status(500)
+                  .json({ erro: "Erro ao atualizar item." });
               }
               res.json({ mensagem: "Quantidade atualizada.", id_carrinho });
             },
@@ -478,9 +592,14 @@ app.post("/api/carrinho/item", (req, res) => {
             (erro3) => {
               if (erro3) {
                 console.error(erro3);
-                return res.status(500).json({ erro: "Erro ao adicionar item." });
+                return res
+                  .status(500)
+                  .json({ erro: "Erro ao adicionar item." });
               }
-              res.json({ mensagem: "Item adicionado ao carrinho.", id_carrinho });
+              res.json({
+                mensagem: "Item adicionado ao carrinho.",
+                id_carrinho,
+              });
             },
           );
         }
@@ -492,7 +611,8 @@ app.post("/api/carrinho/item", (req, res) => {
 app.put("/api/carrinho/item/:id_item_carrinho", (req, res) => {
   const { quantidade } = req.body;
 
-  if (!quantidade || quantidade < 1) return res.status(400).json({ erro: "Quantidade inválida." });
+  if (!quantidade || quantidade < 1)
+    return res.status(400).json({ erro: "Quantidade inválida." });
 
   db.query(
     "UPDATE itemcarrinho SET quantidade = ? WHERE id_item_carrinho = ?",
@@ -502,7 +622,8 @@ app.put("/api/carrinho/item/:id_item_carrinho", (req, res) => {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao atualizar item." });
       }
-      if (resultado.affectedRows === 0) return res.status(404).json({ erro: "Item não encontrado." });
+      if (resultado.affectedRows === 0)
+        return res.status(404).json({ erro: "Item não encontrado." });
       res.json({ mensagem: "Quantidade atualizada." });
     },
   );
@@ -517,7 +638,8 @@ app.delete("/api/carrinho/item/:id_item_carrinho", (req, res) => {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao remover item." });
       }
-      if (resultado.affectedRows === 0) return res.status(404).json({ erro: "Item não encontrado." });
+      if (resultado.affectedRows === 0)
+        return res.status(404).json({ erro: "Item não encontrado." });
       res.json({ mensagem: "Item removido." });
     },
   );
@@ -535,7 +657,8 @@ function gerarCodigoRetirada() {
 app.post("/api/encomendas", (req, res) => {
   const { id_usuario, nome, observacao } = req.body;
 
-  if (!id_usuario) return res.status(400).json({ erro: "id_usuario é obrigatório." });
+  if (!id_usuario)
+    return res.status(400).json({ erro: "id_usuario é obrigatório." });
 
   db.query(
     "SELECT id_carrinho FROM carrinho WHERE id_usuario = ? AND statusC = 'aberto'",
@@ -545,7 +668,10 @@ app.post("/api/encomendas", (req, res) => {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao buscar carrinho." });
       }
-      if (resultadoCarrinho.length === 0) return res.status(400).json({ erro: "Você não tem um carrinho aberto." });
+      if (resultadoCarrinho.length === 0)
+        return res
+          .status(400)
+          .json({ erro: "Você não tem um carrinho aberto." });
 
       const id_carrinho = resultadoCarrinho[0].id_carrinho;
 
@@ -558,9 +684,12 @@ app.post("/api/encomendas", (req, res) => {
         (erro2, itens) => {
           if (erro2) {
             console.error(erro2);
-            return res.status(500).json({ erro: "Erro ao buscar itens do carrinho." });
+            return res
+              .status(500)
+              .json({ erro: "Erro ao buscar itens do carrinho." });
           }
-          if (itens.length === 0) return res.status(400).json({ erro: "Seu carrinho está vazio." });
+          if (itens.length === 0)
+            return res.status(400).json({ erro: "Seu carrinho está vazio." });
 
           const itensPorLoja = {};
           itens.forEach((item) => {
@@ -590,7 +719,10 @@ app.post("/api/encomendas", (req, res) => {
 
             const id_loja = idsLojas[indiceLojaAtual];
             const itensDaLoja = itensPorLoja[id_loja];
-            const valor_total = itensDaLoja.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
+            const valor_total = itensDaLoja.reduce(
+              (soma, item) => soma + item.preco * item.quantidade,
+              0,
+            );
 
             db.query(
               "INSERT INTO encomenda (id_usuario, data, status, valor_total, observacao) VALUES (?, CURDATE(), 'pendente', ?, ?)",
@@ -598,12 +730,18 @@ app.post("/api/encomendas", (req, res) => {
               (erro3, resultadoEncomenda) => {
                 if (erro3) {
                   console.error(erro3);
-                  return res.status(500).json({ erro: "Erro ao criar encomenda." });
+                  return res
+                    .status(500)
+                    .json({ erro: "Erro ao criar encomenda." });
                 }
 
                 const id_encomenda = resultadoEncomenda.insertId;
                 const valoresItens = itensDaLoja.map((item) => [
-                  id_encomenda, item.id_produto, item.quantidade, item.preco, item.preco * item.quantidade,
+                  id_encomenda,
+                  item.id_produto,
+                  item.quantidade,
+                  item.preco,
+                  item.preco * item.quantidade,
                 ]);
 
                 db.query(
@@ -612,7 +750,9 @@ app.post("/api/encomendas", (req, res) => {
                   (erro4) => {
                     if (erro4) {
                       console.error(erro4);
-                      return res.status(500).json({ erro: "Erro ao salvar itens da encomenda." });
+                      return res
+                        .status(500)
+                        .json({ erro: "Erro ao salvar itens da encomenda." });
                     }
 
                     const codigo_retirada = gerarCodigoRetirada();
@@ -623,10 +763,19 @@ app.post("/api/encomendas", (req, res) => {
                       (erro5) => {
                         if (erro5) {
                           console.error(erro5);
-                          return res.status(500).json({ erro: "Erro ao gerar código de retirada." });
+                          return res
+                            .status(500)
+                            .json({
+                              erro: "Erro ao gerar código de retirada.",
+                            });
                         }
 
-                        encomendasCriadas.push({ id_encomenda, valor_total, codigo_retirada, id_loja });
+                        encomendasCriadas.push({
+                          id_encomenda,
+                          valor_total,
+                          codigo_retirada,
+                          id_loja,
+                        });
                         indiceLojaAtual++;
                         processarProximaLoja();
                       },
@@ -656,7 +805,8 @@ app.get("/api/encomendas/:id", (req, res) => {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao buscar encomenda." });
       }
-      if (resultadoEncomenda.length === 0) return res.status(404).json({ erro: "Encomenda não encontrada." });
+      if (resultadoEncomenda.length === 0)
+        return res.status(404).json({ erro: "Encomenda não encontrada." });
 
       db.query(
         `SELECT itemencomenda.quantidade, itemencomenda.preco_unitario,
@@ -668,7 +818,9 @@ app.get("/api/encomendas/:id", (req, res) => {
         (erro2, itens) => {
           if (erro2) {
             console.error(erro2);
-            return res.status(500).json({ erro: "Erro ao buscar itens da encomenda." });
+            return res
+              .status(500)
+              .json({ erro: "Erro ao buscar itens da encomenda." });
           }
           res.json({ ...resultadoEncomenda[0], itens });
         },
@@ -694,7 +846,9 @@ app.get("/api/encomendas/loja/:id_loja", (req, res) => {
     (erro, encomendas) => {
       if (erro) {
         console.error(erro);
-        return res.status(500).json({ erro: "Erro ao buscar pedidos da loja." });
+        return res
+          .status(500)
+          .json({ erro: "Erro ao buscar pedidos da loja." });
       }
       if (encomendas.length === 0) return res.json([]);
 
@@ -710,12 +864,16 @@ app.get("/api/encomendas/loja/:id_loja", (req, res) => {
         (erro2, todosItens) => {
           if (erro2) {
             console.error(erro2);
-            return res.status(500).json({ erro: "Erro ao buscar itens dos pedidos." });
+            return res
+              .status(500)
+              .json({ erro: "Erro ao buscar itens dos pedidos." });
           }
 
           const resultado = encomendas.map((encomenda) => ({
             ...encomenda,
-            itens: todosItens.filter((item) => item.id_encomenda === encomenda.id_encomenda),
+            itens: todosItens.filter(
+              (item) => item.id_encomenda === encomenda.id_encomenda,
+            ),
           }));
 
           res.json(resultado);
@@ -729,7 +887,8 @@ app.put("/api/encomendas/:id/status", (req, res) => {
   const { status } = req.body;
   const statusValidos = ["pendente", "pronta", "retirada"];
 
-  if (!statusValidos.includes(status)) return res.status(400).json({ erro: "Status inválido." });
+  if (!statusValidos.includes(status))
+    return res.status(400).json({ erro: "Status inválido." });
 
   db.query(
     "UPDATE encomenda SET status = ? WHERE id_encomenda = ?",
@@ -739,7 +898,8 @@ app.put("/api/encomendas/:id/status", (req, res) => {
         console.error(erro);
         return res.status(500).json({ erro: "Erro ao atualizar status." });
       }
-      if (resultado.affectedRows === 0) return res.status(404).json({ erro: "Encomenda não encontrada." });
+      if (resultado.affectedRows === 0)
+        return res.status(404).json({ erro: "Encomenda não encontrada." });
 
       if (status === "retirada") {
         db.query(

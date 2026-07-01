@@ -9,6 +9,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 // Busca o carrinho real do usuário logado e desenha a lista de itens,
 // com controles de quantidade (+/-) e botão de remover em cada um.
 async function carregarCarrinho() {
@@ -91,18 +103,23 @@ function criarLinhaItem(item) {
     atualizarQuantidade(item.id_item_carrinho, item.quantidade + 1);
   });
 
-  botaoRemover.addEventListener("click", () => removerItem(item.id_item_carrinho));
+  botaoRemover.addEventListener("click", () =>
+    removerItem(item.id_item_carrinho),
+  );
 
   return linha;
 }
 
 async function atualizarQuantidade(id_item_carrinho, novaQuantidade) {
   try {
-    const resposta = await fetch(`${API}/api/carrinho/item/${id_item_carrinho}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantidade: novaQuantidade }),
-    });
+    const resposta = await fetch(
+      `${API}/api/carrinho/item/${id_item_carrinho}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantidade: novaQuantidade }),
+      },
+    );
 
     if (!resposta.ok) throw new Error("Erro ao atualizar quantidade");
 

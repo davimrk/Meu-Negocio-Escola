@@ -1,6 +1,18 @@
 const API = "http://localhost:3000";
 const container = document.getElementById("listaProdutos");
 
+const btnModo = document.getElementById("modoEscuro");
+
+btnModo.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    btnModo.innerHTML = "☀️";
+  } else {
+    btnModo.innerHTML = "🌙";
+  }
+});
+
 // Carrega e exibe todos os produtos do cardápio geral
 async function carregarProdutos() {
   const resposta = await fetch(`${API}/api/produtos`);
